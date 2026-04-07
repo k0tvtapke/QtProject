@@ -2,8 +2,7 @@
 #define TOURISTTABWIDGET_H
 
 #include "widgets/databasetabwidget.h"
-#include "../datastorage.h"
-#include "models/touristtablemodel.h"
+#include "datastorage.h"
 
 class TouristTabWidget : public DatabaseTabWidget
 {
@@ -14,8 +13,6 @@ public:
 
 private:
     DataStorage *m_dataStorage;
-
-    TouristTableModel *m_tableModel;
 
     void onAddEntryButtonClicked() override;
     void onDeleteEntryButtonClicked() override;

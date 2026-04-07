@@ -1,9 +1,8 @@
 #ifndef DESTINATIONTABWIDGET_H
 #define DESTINATIONTABWIDGET_H
 
+#include "datastorage.h"
 #include "widgets/databasetabwidget.h"
-#include "../datastorage.h"
-#include "models/destinationtablemodel.h"
 
 class DestinationTabWidget : public DatabaseTabWidget
 {
@@ -14,8 +13,6 @@ public:
 
 private:
     DataStorage *m_dataStorage;
-
-    DestinationTableModel *m_tableModel;
 
     void onAddEntryButtonClicked() override;
     void onDeleteEntryButtonClicked() override;

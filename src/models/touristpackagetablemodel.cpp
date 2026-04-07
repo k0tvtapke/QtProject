@@ -1,8 +1,7 @@
 #include "models/touristpackagemodel.h"
 
-TouristPackageTableModel::TouristPackageTableModel(DataStorage *dataStorage, QObject *parent) : m_dataStorage(
-        dataStorage),
-    QAbstractTableModel(parent) {
+TouristPackageTableModel::TouristPackageTableModel(DataStorage *dataStorage, QObject *parent) : BaseTableModel(
+    dataStorage, parent) {
 }
 
 int TouristPackageTableModel::rowCount(const QModelIndex &parent) const {
@@ -39,9 +38,12 @@ QVariant TouristPackageTableModel::data(const QModelIndex &index, int role) cons
                         result += ", ";
                     }
                     result += m_dataStorage->m_touristEntries[id].m_lastName + " " +
-                              m_dataStorage->m_touristEntries[id].m_firstName +
-                              (m_dataStorage->m_touristEntries[id].m_surname.isEmpty() ? "" : (" " +
-                              m_dataStorage->m_touristEntries[id].m_surname)) + " (ID: " + QString::number(id) + ")";
+                            m_dataStorage->m_touristEntries[id].m_firstName +
+                            (m_dataStorage->m_touristEntries[id].m_surname.isEmpty()
+                                 ? ""
+                                 : (" " +
+                                    m_dataStorage->m_touristEntries[id].m_surname)) + " (ID: " + QString::number(id) +
+                            ")";
                 }
 
                 return result;
@@ -49,7 +51,8 @@ QVariant TouristPackageTableModel::data(const QModelIndex &index, int role) cons
             case 2: {
                 auto id = m_dataStorage->m_touristPackageEntries[index.row()].m_destinationId;
 
-                return m_dataStorage->m_destinationEntries[id].m_country + ", " + m_dataStorage->m_destinationEntries[id]
+                return m_dataStorage->m_destinationEntries[id].m_country + ", " + m_dataStorage->m_destinationEntries[
+                           id]
                        .m_city + " (ID: " + QString::number(id) + ")";
             }
             case 3:

@@ -1,10 +1,11 @@
 #include "widgets/destinationtabwidget.h"
 #include "ui_databasetabwidget.h"
 
-DestinationTabWidget::DestinationTabWidget(DataStorage *storage, QWidget *parent) : m_dataStorage(storage),
-                                                                                    DatabaseTabWidget(parent) {
-    m_tableModel = new DestinationTableModel(m_dataStorage, this);
+#include "models/destinationtablemodel.h"
 
+
+DestinationTabWidget::DestinationTabWidget(DataStorage *storage, QWidget *parent) : m_dataStorage(storage),
+    DatabaseTabWidget(new DestinationTableModel(storage, parent), parent) {
     ui->databaseTable->setModel(m_tableModel);
     ui->databaseTable->setSortingEnabled(true);
     ui->databaseTable->resizeColumnsToContents();

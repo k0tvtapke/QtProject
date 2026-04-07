@@ -1,7 +1,6 @@
 #include "models/touristtablemodel.h"
 
-TouristTableModel::TouristTableModel(DataStorage *dataStorage, QObject *parent) : m_dataStorage(dataStorage),
-    QAbstractTableModel(parent) {
+TouristTableModel::TouristTableModel(DataStorage *dataStorage, QObject *parent) : BaseTableModel(dataStorage, parent) {
 }
 
 int TouristTableModel::rowCount(const QModelIndex &parent) const {

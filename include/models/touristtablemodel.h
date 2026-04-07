@@ -2,8 +2,8 @@
 #define TOURISTTABLEMODEL_H
 
 #include "../datastorage.h"
+#include "models/basetablemodel.h"
 
-#include <QAbstractTableModel>
 #include <QVariant>
 
 const QString kGenders[]{
@@ -11,7 +11,7 @@ const QString kGenders[]{
     "Женский"
 };
 
-class TouristTableModel : public QAbstractTableModel {
+class TouristTableModel : public BaseTableModel {
     Q_OBJECT
 
 public:
@@ -24,9 +24,6 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-
-private:
-    DataStorage *m_dataStorage;
 };
 
 #endif // TOURISTTABLEMODEL_H

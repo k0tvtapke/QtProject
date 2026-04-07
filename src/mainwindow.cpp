@@ -167,6 +167,10 @@ void MainWindow::on_loadDatabaseButton_clicked() {
 
         if (m_dataStorage->loadFromFile(filePath)) {
             ui->chosenFileLabel->setText("Выбранный файл базы данных: " + filePath);
+
+            m_destinationTabWidget->reloadTable();
+            m_touristTabWidget->reloadTable();
+            m_touristPackageTabWidget->reloadTable();
         } else {
             QMessageBox::critical(this, "Ошибка чтения файла", "Не удалось загрузить файл");
         }

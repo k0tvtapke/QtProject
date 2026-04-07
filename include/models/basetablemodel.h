@@ -4,7 +4,6 @@
 #include "datastorage.h"
 
 #include <QAbstractTableModel>
-#include <QVariant>
 
 class BaseTableModel : public QAbstractTableModel {
     Q_OBJECT

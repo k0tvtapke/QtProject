@@ -2,8 +2,8 @@
 #define DESTINATIONTABLEMODEL_H
 
 #include "datastorage.h"
+#include "models/basetablemodel.h"
 
-#include <QAbstractTableModel>
 #include <QVariant>
 
 const QString kFoodTypes[]{
@@ -15,7 +15,7 @@ const QString kFoodTypes[]{
     "Ультра все включено"
 };
 
-class DestinationTableModel : public QAbstractTableModel {
+class DestinationTableModel : public BaseTableModel {
     Q_OBJECT
 
 public:
@@ -28,12 +28,6 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-
-public slots:
-    void reloadTable();
-
-private:
-    DataStorage *m_dataStorage;
 };
 
 #endif // DESTINATIONTABLEMODEL_H

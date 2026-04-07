@@ -1,12 +1,12 @@
 #ifndef TOURISTPACKAGETABLEMODEL_H
 #define TOURISTPACKAGETABLEMODEL_H
 
-#include "../datastorage.h"
+#include "datastorage.h"
+#include "models/basetablemodel.h"
 
-#include <QAbstractTableModel>
 #include <QVariant>
 
-class TouristPackageTableModel : public QAbstractTableModel {
+class TouristPackageTableModel : public BaseTableModel {
     Q_OBJECT
 
 public:
@@ -19,9 +19,6 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-
-private:
-    DataStorage *m_dataStorage;
 };
 
 #endif // TOURISTPACKAGETABLEMODEL_H

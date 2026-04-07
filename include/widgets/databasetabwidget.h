@@ -1,10 +1,9 @@
 #ifndef DATABASETABWIDGET_H
 #define DATABASETABWIDGET_H
 
-#include "models/destinationtablemodel.h"
+#include "models/basetablemodel.h"
 
 #include <QWidget>
-#include <QSortFilterProxyModel>
 
 namespace Ui {
 class DatabaseTabWidget;
@@ -15,11 +14,15 @@ class DatabaseTabWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit DatabaseTabWidget(QWidget *parent = nullptr);
+    explicit DatabaseTabWidget(BaseTableModel *tableModel, QWidget *parent = nullptr);
     ~DatabaseTabWidget() override;
+
+    void reloadTable();
 
 protected:
     Ui::DatabaseTabWidget *ui;
+
+    BaseTableModel *m_tableModel;
 
     virtual void onAddEntryButtonClicked() = 0;
     virtual void onDeleteEntryButtonClicked() = 0;

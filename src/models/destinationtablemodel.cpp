@@ -1,7 +1,6 @@
 #include "models/destinationtablemodel.h"
 
-DestinationTableModel::DestinationTableModel(DataStorage *dataStorage, QObject *parent) : QAbstractTableModel(parent),
-    m_dataStorage(dataStorage) {
+DestinationTableModel::DestinationTableModel(DataStorage *dataStorage, QObject *parent) : BaseTableModel(dataStorage, parent){
 }
 
 int DestinationTableModel::rowCount(const QModelIndex &parent) const {
@@ -56,9 +55,4 @@ QVariant DestinationTableModel::headerData(int section, Qt::Orientation orientat
     }
 
     return QAbstractTableModel::headerData(section, orientation, role);
-}
-
-void DestinationTableModel::reloadTable() {
-    beginResetModel();
-    endResetModel();
 }

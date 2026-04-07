@@ -18,23 +18,8 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>-1</number>
       </property>
-      <widget class="QWidget" name="destinationsTab">
-       <attribute name="title">
-        <string>Направления</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="touristsTab">
-       <attribute name="title">
-        <string>Туристы</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="touristPackagesTab">
-       <attribute name="title">
-        <string>Путевки</string>
-       </attribute>
-      </widget>
      </widget>
     </item>
     <item>

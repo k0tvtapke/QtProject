@@ -6,6 +6,8 @@
 
 #include <QVariant>
 
+constexpr int kTouristPackageEntryColumnCount = 6;
+
 class TouristPackageTableModel : public BaseTableModel {
     Q_OBJECT
 

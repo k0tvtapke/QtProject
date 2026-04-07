@@ -14,15 +14,11 @@ TouristTabWidget::TouristTabWidget(DataStorage *storage, QWidget *parent) : m_da
     ui->databaseTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
-TouristTabWidget::~TouristTabWidget() {
-    delete m_tableModel;
+void TouristTabWidget::on_addEntryButton_clicked() {
 }
 
-void TouristTabWidget::onAddEntryButtonClicked() {
+void TouristTabWidget::on_deleteEntryButton_clicked() {
 }
 
-void TouristTabWidget::onDeleteEntryButtonClicked() {
-}
-
-void TouristTabWidget::onCreateReportButtonClicked() {
+void TouristTabWidget::on_createReportButton_clicked() {
 }

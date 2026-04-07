@@ -186,10 +186,8 @@ void MainWindow::on_saveDatabaseButton_clicked() {
                                                           "*.bin");
 
     if (!filePath.isEmpty()) {
-        if (m_chosenFilePath.isEmpty()) {
-            m_chosenFilePath = filePath;
-            ui->chosenFileLabel->setText("Выбранный файл базы данных: " + filePath);
-        }
+        m_chosenFilePath = filePath;
+        ui->chosenFileLabel->setText("Выбранный файл базы данных: " + filePath);
 
         if (m_dataStorage->saveToFile(m_chosenFilePath)) {
             QMessageBox::information(this, "Сохранение файла", "Файл был успешно сохранен");

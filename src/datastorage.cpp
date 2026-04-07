@@ -191,7 +191,6 @@ void DataStorage::deleteTouristPackageEntry(const size_t idx) {
 bool DataStorage::saveToFile(const QString &filename) const {
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly)) {
-        qDebug() << "Ошибка открытия файла для записи:" << filename;
         return false;
     }
 
@@ -208,7 +207,6 @@ bool DataStorage::saveToFile(const QString &filename) const {
 bool DataStorage::loadFromFile(const QString &filename) {
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "Файл не найден или нет прав на чтение:" << filename;
         return false;
     }
 
@@ -224,7 +222,6 @@ bool DataStorage::loadFromFile(const QString &filename) {
     in >> m_touristPackageEntries;
 
     if (in.status() != QDataStream::Ok) {
-        qDebug() << "Ошибка чтения данных из файла!";
         return false;
     }
 

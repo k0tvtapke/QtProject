@@ -1,14 +1,9 @@
 #ifndef DATASTORAGE_H
 #define DATASTORAGE_H
 
-#include <QString>
 #include <QDate>
 #include <QList>
 #include <QFile>
-
-constexpr int kDestinationEntryColumnCount = 6;
-constexpr int kTouristEntryColumnCount = 6;
-constexpr int kTouristPackageEntryColumnCount = 6;
 
 QDataStream &operator<<(QDataStream &out, const std::optional<quint32> &opt);
 

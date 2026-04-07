@@ -12,15 +12,11 @@ TouristPackageTabWidget::TouristPackageTabWidget(DataStorage *storage, QWidget *
     ui->databaseTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
-TouristPackageTabWidget::~TouristPackageTabWidget() {
-    delete m_tableModel;
+void TouristPackageTabWidget::on_addEntryButton_clicked() {
 }
 
-void TouristPackageTabWidget::onAddEntryButtonClicked() {
+void TouristPackageTabWidget::on_deleteEntryButton_clicked() {
 }
 
-void TouristPackageTabWidget::onDeleteEntryButtonClicked() {
-}
-
-void TouristPackageTabWidget::onCreateReportButtonClicked() {
+void TouristPackageTabWidget::on_createReportButton_clicked() {
 }

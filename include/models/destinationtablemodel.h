@@ -6,6 +6,8 @@
 
 #include <QVariant>
 
+constexpr int kDestinationEntryColumnCount = 6;
+
 const QString kFoodTypes[]{
     "Без питания",
     "Только завтрак",

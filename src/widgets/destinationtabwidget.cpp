@@ -13,15 +13,11 @@ DestinationTabWidget::DestinationTabWidget(DataStorage *storage, QWidget *parent
     ui->databaseTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
-DestinationTabWidget::~DestinationTabWidget() {
-    delete m_tableModel;
+void DestinationTabWidget::on_addEntryButton_clicked() {
 }
 
-void DestinationTabWidget::onAddEntryButtonClicked() {
+void DestinationTabWidget::on_deleteEntryButton_clicked() {
 }
 
-void DestinationTabWidget::onDeleteEntryButtonClicked() {
-}
-
-void DestinationTabWidget::onCreateReportButtonClicked() {
+void DestinationTabWidget::on_createReportButton_clicked() {
 }

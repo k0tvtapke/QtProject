@@ -16,17 +16,3 @@ DatabaseTabWidget::~DatabaseTabWidget() {
 void DatabaseTabWidget::reloadTable() {
     m_tableModel->reloadTable();
 }
-
-void DatabaseTabWidget::on_addEntryButton_clicked() {
-    onAddEntryButtonClicked();
-}
-
-
-void DatabaseTabWidget::on_deleteEntryButton_clicked() {
-    onDeleteEntryButtonClicked();
-}
-
-
-void DatabaseTabWidget::on_createReportButton_clicked() {
-    onCreateReportButtonClicked();
-}

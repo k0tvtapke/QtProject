@@ -24,13 +24,10 @@ protected:
 
     BaseTableModel *m_tableModel;
 
-    virtual void onAddEntryButtonClicked() = 0;
-    virtual void onDeleteEntryButtonClicked() = 0;
-    virtual void onCreateReportButtonClicked() = 0;
-private slots:
-    void on_addEntryButton_clicked();
-    void on_deleteEntryButton_clicked();
-    void on_createReportButton_clicked();
+protected slots:
+    virtual void on_addEntryButton_clicked() = 0;
+    virtual void on_deleteEntryButton_clicked() = 0;
+    virtual void on_createReportButton_clicked() = 0;
 };
 
 #endif // DATABASETABWIDGET_H

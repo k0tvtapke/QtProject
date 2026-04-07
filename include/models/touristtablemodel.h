@@ -6,6 +6,8 @@
 
 #include <QVariant>
 
+constexpr int kTouristEntryColumnCount = 6;
+
 const QString kGenders[]{
     "Мужской",
     "Женский"

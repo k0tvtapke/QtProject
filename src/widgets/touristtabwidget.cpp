@@ -2,6 +2,7 @@
 #include "ui_databasetabwidget.h"
 
 #include "models/touristtablemodel.h"
+#include "dialogs/newtouristentrydialog.h"
 
 TouristTabWidget::TouristTabWidget(DataStorage *storage, QWidget *parent) : m_dataStorage(storage),
                                                                             DatabaseTabWidget(
@@ -15,6 +16,12 @@ TouristTabWidget::TouristTabWidget(DataStorage *storage, QWidget *parent) : m_da
 }
 
 void TouristTabWidget::on_addEntryButton_clicked() {
+    NewTouristEntryDialog dialog(m_dataStorage->m_touristEntries.size(), this);
+
+    if (dialog.exec()) {
+        m_dataStorage->addTouristEntry(dialog.getTouristEntry());
+        reloadTable();
+    }
 }
 
 void TouristTabWidget::on_deleteEntryButton_clicked() {

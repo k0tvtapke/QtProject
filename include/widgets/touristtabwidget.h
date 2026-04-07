@@ -1,8 +1,8 @@
 #ifndef TOURISTTABWIDGET_H
 #define TOURISTTABWIDGET_H
 
-#include "widgets/databasetabwidget.h"
 #include "datastorage.h"
+#include "widgets/databasetabwidget.h"
 
 class TouristTabWidget : public DatabaseTabWidget {
     Q_OBJECT

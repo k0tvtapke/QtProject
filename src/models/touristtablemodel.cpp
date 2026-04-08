@@ -66,3 +66,7 @@ void TouristTableModel::removeEntry(size_t view_idx, const QModelIndex &parent) 
     m_dataStorage->deleteTouristEntry(real_idx);
     endRemoveRows();
 }
+
+size_t TouristTableModel::viewIndexToRealIndex(size_t view_idx) {
+    return m_dataStorage->touristEntryViewIndexToRealIndex(view_idx);
+}

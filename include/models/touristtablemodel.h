@@ -28,6 +28,8 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
     void removeEntry(size_t view_idx, const QModelIndex &parent) override;
+
+    size_t viewIndexToRealIndex(size_t view_idx) override;
 };
 
 #endif // TOURISTTABLEMODEL_H

@@ -26,6 +26,10 @@ void DatabaseTabWidget::reloadTable() {
     m_tableModel->reloadTable();
 }
 
+void DatabaseTabWidget::resizeTable() {
+    ui->databaseTable->resizeColumnsToContents();
+}
+
 void DatabaseTabWidget::onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
     Q_UNUSED(deselected);
 

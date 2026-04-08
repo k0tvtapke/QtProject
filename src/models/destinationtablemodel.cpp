@@ -67,3 +67,7 @@ void DestinationTableModel::removeEntry(size_t view_idx, const QModelIndex &pare
     m_dataStorage->deleteDestinationEntry(real_idx);
     endRemoveRows();
 }
+
+size_t DestinationTableModel::viewIndexToRealIndex(size_t view_idx) {
+    return m_dataStorage->destinationEntryViewIndexToRealIndex(view_idx);
+}

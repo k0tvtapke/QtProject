@@ -2,6 +2,7 @@
 #include "ui_databasetabwidget.h"
 
 #include "models/touristpackagemodel.h"
+#include "dialogs/newtouristpackageentrydialog.h"
 
 #include <QMessageBox>
 
@@ -14,6 +15,12 @@ TouristPackageTabWidget::TouristPackageTabWidget(DataStorage *storage, QWidget *
 }
 
 void TouristPackageTabWidget::on_addEntryButton_clicked() {
+    NewTouristPackageEntryDialog dialog(m_dataStorage->m_touristPackageEntries.size(), m_dataStorage, this);
+
+    if (dialog.exec()) {
+        m_dataStorage->addTouristPackageEntry(dialog.getTouristPackageEntry());
+        reloadTable();
+    }
 }
 
 void TouristPackageTabWidget::on_deleteEntryButton_clicked() {

@@ -171,6 +171,10 @@ void MainWindow::on_loadDatabaseButton_clicked() {
             m_destinationTabWidget->reloadTable();
             m_touristTabWidget->reloadTable();
             m_touristPackageTabWidget->reloadTable();
+
+            m_destinationTabWidget->resizeTable();
+            m_touristTabWidget->resizeTable();
+            m_touristPackageTabWidget->resizeTable();
         } else {
             QMessageBox::critical(this, "Ошибка чтения файла", "Не удалось загрузить файл");
         }

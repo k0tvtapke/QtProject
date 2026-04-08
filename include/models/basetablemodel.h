@@ -13,6 +13,8 @@ public:
 
     virtual void removeEntry(size_t view_idx, const QModelIndex &parent) = 0;
 
+    virtual size_t viewIndexToRealIndex(size_t view_idx) = 0;
+
 public slots:
     void reloadTable();
 

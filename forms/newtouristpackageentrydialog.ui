@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>332</width>
-    <height>239</height>
+    <height>283</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -57,16 +57,28 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="firstNameLayout">
+    <layout class="QHBoxLayout" name="touristLayout">
      <item>
-      <widget class="QLabel" name="firstNameLabel">
+      <widget class="QLabel" name="touristLabel">
        <property name="text">
-        <string>Выбранные туристы:</string>
+        <string>Туристы:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="choiceTouristButton">
+      <widget class="QPushButton" name="chooseTouristButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="text">
         <string>Выбрать туристов</string>
        </property>
@@ -75,34 +87,60 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="lastNameLayout">
+    <widget class="QLabel" name="chosenTouristsLabel">
+     <property name="text">
+      <string>Ни один турист пока не выбран</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="destinationLayout">
      <item>
-      <widget class="QLabel" name="lastNameLabel">
+      <widget class="QLabel" name="destinationLabel">
        <property name="text">
-        <string>Выбранная направления:</string>
+        <string>Направление:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="choiseDirectionsButton">
+      <widget class="QPushButton" name="chooseDestinationButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="text">
-        <string>Выбрать направления</string>
+        <string>Выбрать направление</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="surnameLayout">
+    <widget class="QLabel" name="chosenDestinationLabel">
+     <property name="text">
+      <string>Направление еще не выбрано</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="arrivalDateLayout">
      <item>
-      <widget class="QLabel" name="surnameLabel">
+      <widget class="QLabel" name="arrivalDateLabel">
        <property name="text">
         <string>Дата отправки:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QDateEdit" name="dateEdit">
+      <widget class="QDateEdit" name="arrivalDateDateEdit">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -120,9 +158,9 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="genderLayout">
+    <layout class="QHBoxLayout" name="durationLayout">
      <item>
-      <widget class="QLabel" name="genderLabel">
+      <widget class="QLabel" name="durationLabel">
        <property name="text">
         <string>Длительность:</string>
        </property>
@@ -130,6 +168,18 @@
      </item>
      <item>
       <widget class="QSpinBox" name="durationSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="maximum">
         <number>2147483647</number>
        </property>
@@ -138,18 +188,30 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="finalPriceLayout">
      <item>
-      <widget class="QLabel" name="birthDateLabel">
+      <widget class="QLabel" name="finalPriceLabel">
        <property name="text">
         <string>Итоговая цена:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="priceSpinBox">
+      <widget class="QDoubleSpinBox" name="finalPriceDoubleSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="maximum">
-        <number>2147483647</number>
+        <double>179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -159,6 +221,12 @@
     <layout class="QHBoxLayout" name="dialogButtonLayout">
      <item>
       <widget class="QPushButton" name="cancelButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>150</width>
@@ -185,8 +253,11 @@
      </item>
      <item>
       <widget class="QPushButton" name="addEntryButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>

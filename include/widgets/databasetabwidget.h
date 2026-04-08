@@ -19,6 +19,7 @@ public:
     ~DatabaseTabWidget() override;
 
     void reloadTable();
+    void resizeTable();
 
 protected:
     Ui::DatabaseTabWidget *ui;

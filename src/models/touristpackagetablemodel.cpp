@@ -92,3 +92,7 @@ void TouristPackageTableModel::removeEntry(size_t view_idx, const QModelIndex &p
     m_dataStorage->deleteTouristPackageEntry(real_idx);
     endRemoveRows();
 }
+
+size_t TouristPackageTableModel::viewIndexToRealIndex(size_t view_idx) {
+    return m_dataStorage->touristPackageEntryViewIndexToRealIndex(view_idx);
+}

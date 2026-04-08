@@ -1,13 +1,14 @@
 #include "models/destinationtablemodel.h"
 
-DestinationTableModel::DestinationTableModel(DataStorage *dataStorage, QObject *parent) : BaseTableModel(dataStorage, parent){
+DestinationTableModel::DestinationTableModel(DataStorage *dataStorage, QObject *parent) : BaseTableModel(
+    dataStorage, parent) {
 }
 
 int DestinationTableModel::rowCount(const QModelIndex &parent) const {
     if (parent.isValid()) {
         return 0;
     }
-    return m_dataStorage->m_destinationEntries.size();
+    return m_dataStorage->getDestinationEntriesViewCount();
 }
 
 int DestinationTableModel::columnCount(const QModelIndex &parent) const {
@@ -22,20 +23,22 @@ QVariant DestinationTableModel::data(const QModelIndex &index, int role) const {
 
     if (index.row() >= m_dataStorage->m_destinationEntries.size()) return QVariant();
 
+    auto entry = m_dataStorage->m_destinationEntries[m_dataStorage->destinationEntryViewIndexToRealIndex(index.row())];
+
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         switch (index.column()) {
             case 0:
-                return m_dataStorage->m_destinationEntries[index.row()].m_id.value();
+                return entry.m_id.value();
             case 1:
-                return m_dataStorage->m_destinationEntries[index.row()].m_country;
+                return entry.m_country;
             case 2:
-                return m_dataStorage->m_destinationEntries[index.row()].m_city;
+                return entry.m_city;
             case 3:
-                return m_dataStorage->m_destinationEntries[index.row()].m_basePrice;
+                return entry.m_basePrice;
             case 4:
-                return kFoodTypes[static_cast<size_t>(m_dataStorage->m_destinationEntries[index.row()].m_foodType)];
+                return kFoodTypes[static_cast<size_t>(entry.m_foodType)];
             case 5:
-                return m_dataStorage->m_destinationEntries[index.row()].m_hotelStars;
+                return entry.m_hotelStars;
         }
     }
 
@@ -55,4 +58,12 @@ QVariant DestinationTableModel::headerData(int section, Qt::Orientation orientat
     }
 
     return QAbstractTableModel::headerData(section, orientation, role);
+}
+
+void DestinationTableModel::removeEntry(size_t view_idx, const QModelIndex &parent) {
+    size_t real_idx = m_dataStorage->destinationEntryViewIndexToRealIndex(view_idx);
+
+    beginRemoveRows(parent, view_idx, view_idx);
+    m_dataStorage->deleteDestinationEntry(real_idx);
+    endRemoveRows();
 }

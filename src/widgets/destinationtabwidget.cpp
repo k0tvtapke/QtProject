@@ -1,12 +1,14 @@
 #include "widgets/destinationtabwidget.h"
+
 #include "ui_databasetabwidget.h"
 
 #include "models/destinationtablemodel.h"
 #include "dialogs/newdestinationentrydialog.h"
 
+#include <QMessageBox>
+
 DestinationTabWidget::DestinationTabWidget(DataStorage *storage, QWidget *parent) : m_dataStorage(storage),
     DatabaseTabWidget(new DestinationTableModel(storage, parent), parent) {
-    ui->databaseTable->setModel(m_tableModel);
     ui->databaseTable->setSortingEnabled(true);
     ui->databaseTable->resizeColumnsToContents();
     ui->databaseTable->setWordWrap(true);
@@ -23,6 +25,19 @@ void DestinationTabWidget::on_addEntryButton_clicked() {
 }
 
 void DestinationTabWidget::on_deleteEntryButton_clicked() {
+    QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
+
+    QModelIndex index = selectedIndexes.first();
+
+    if (QMessageBox::question(this, "Подтверждение удаления",
+                              QString("Вы действительно хотите удалить запись?"))
+        != QMessageBox::Yes) {
+        return;
+    }
+
+    if (!index.isValid()) return;
+
+    m_tableModel->removeEntry(index.row(), QModelIndex());
 }
 
 void DestinationTabWidget::on_createReportButton_clicked() {

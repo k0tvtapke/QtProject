@@ -188,6 +188,90 @@ void DataStorage::deleteTouristPackageEntry(const size_t idx) {
     m_touristPackageEntries[idx].m_isRemoved = true;
 }
 
+size_t DataStorage::destinationEntryViewIndexToRealIndex(const size_t view_idx) {
+    assert(m_destinationEntries.size() > view_idx);
+
+    int visibleCount = 0;
+    for (int i = 0; i < m_destinationEntries.size(); ++i) {
+        if (!m_destinationEntries[i].m_isRemoved) {
+            if (visibleCount == view_idx) {
+                return i;
+            }
+            ++visibleCount;
+        }
+    }
+
+    throw std::out_of_range("Variable view_idx out of range");
+}
+
+size_t DataStorage::touristEntryViewIndexToRealIndex(const size_t view_idx) {
+    assert(m_touristEntries.size() > view_idx);
+
+    int visibleCount = 0;
+    for (int i = 0; i < m_touristEntries.size(); ++i) {
+        if (!m_touristEntries[i].m_isRemoved) {
+            if (visibleCount == view_idx) {
+                return i;
+            }
+            ++visibleCount;
+        }
+    }
+
+    throw std::out_of_range("Variable view_idx out of range");
+}
+
+size_t DataStorage::touristPackageEntryViewIndexToRealIndex(const size_t view_idx) {
+    assert(m_touristPackageEntries.size() > view_idx);
+
+    int visibleCount = 0;
+    for (int i = 0; i < m_touristPackageEntries.size(); ++i) {
+        if (!m_touristPackageEntries[i].m_isRemoved) {
+            if (visibleCount == view_idx) {
+                return i;
+            }
+            ++visibleCount;
+        }
+    }
+
+    throw std::out_of_range("Variable view_idx out of range");
+}
+
+size_t DataStorage::getDestinationEntriesViewCount() {
+    size_t count = 0;
+
+    for (auto const &entry: m_destinationEntries) {
+        if (!entry.m_isRemoved) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+size_t DataStorage::getTouristEntriesViewCount() {
+    size_t count = 0;
+
+    for (auto const &entry: m_touristEntries) {
+        if (!entry.m_isRemoved) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+size_t DataStorage::getTouristPackageEntriesViewCount() {
+    size_t count = 0;
+
+    for (auto const &entry: m_touristPackageEntries) {
+        if (!entry.m_isRemoved) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
 bool DataStorage::saveToFile(const QString &filename) const {
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly)) {

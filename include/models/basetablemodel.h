@@ -11,6 +11,8 @@ class BaseTableModel : public QAbstractTableModel {
 public:
     BaseTableModel(DataStorage *dataStorage, QObject *parent);
 
+    virtual void removeEntry(size_t view_idx, const QModelIndex &parent) = 0;
+
 public slots:
     void reloadTable();
 

@@ -30,6 +30,8 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+
+    void removeEntry(size_t view_idx, const QModelIndex &parent) override;
 };
 
 #endif // DESTINATIONTABLEMODEL_H

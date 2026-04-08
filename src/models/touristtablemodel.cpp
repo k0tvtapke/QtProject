@@ -7,7 +7,7 @@ int TouristTableModel::rowCount(const QModelIndex &parent) const {
     if (parent.isValid()) {
         return 0;
     }
-    return m_dataStorage->m_touristEntries.size();
+    return m_dataStorage->getTouristEntriesViewCount();
 }
 
 int TouristTableModel::columnCount(const QModelIndex &parent) const {
@@ -22,20 +22,22 @@ QVariant TouristTableModel::data(const QModelIndex &index, int role) const {
 
     if (index.row() >= m_dataStorage->m_touristEntries.size()) return QVariant();
 
+    auto entry = m_dataStorage->m_touristEntries[m_dataStorage->touristEntryViewIndexToRealIndex(index.row())];
+
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         switch (index.column()) {
             case 0:
-                return m_dataStorage->m_touristEntries[index.row()].m_id.value();
+                return entry.m_id.value();
             case 1:
-                return m_dataStorage->m_touristEntries[index.row()].m_firstName;
+                return entry.m_firstName;
             case 2:
-                return m_dataStorage->m_touristEntries[index.row()].m_lastName;
+                return entry.m_lastName;
             case 3:
-                return m_dataStorage->m_touristEntries[index.row()].m_surname;
+                return entry.m_surname;
             case 4:
-                return kGenders[static_cast<size_t>(m_dataStorage->m_touristEntries[index.row()].m_gender)];
+                return kGenders[static_cast<size_t>(entry.m_gender)];
             case 5:
-                return m_dataStorage->m_touristEntries[index.row()].m_birthDate;
+                return entry.m_birthDate;
         }
     }
 
@@ -55,4 +57,12 @@ QVariant TouristTableModel::headerData(int section, Qt::Orientation orientation,
     }
 
     return QAbstractTableModel::headerData(section, orientation, role);
+}
+
+void TouristTableModel::removeEntry(size_t view_idx, const QModelIndex &parent) {
+    size_t real_idx = m_dataStorage->touristEntryViewIndexToRealIndex(view_idx);
+
+    beginRemoveRows(parent, view_idx, view_idx);
+    m_dataStorage->deleteTouristEntry(real_idx);
+    endRemoveRows();
 }

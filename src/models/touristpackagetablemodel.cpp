@@ -8,7 +8,7 @@ int TouristPackageTableModel::rowCount(const QModelIndex &parent) const {
     if (parent.isValid()) {
         return 0;
     }
-    return m_dataStorage->m_touristPackageEntries.size();
+    return m_dataStorage->getTouristPackageEntriesViewCount();
 }
 
 int TouristPackageTableModel::columnCount(const QModelIndex &parent) const {
@@ -23,15 +23,18 @@ QVariant TouristPackageTableModel::data(const QModelIndex &index, int role) cons
 
     if (index.row() >= m_dataStorage->m_touristPackageEntries.size()) return QVariant();
 
+    auto entry = m_dataStorage->m_touristPackageEntries[m_dataStorage->
+        touristPackageEntryViewIndexToRealIndex(index.row())];
+
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         switch (index.column()) {
             case 0:
-                return m_dataStorage->m_touristPackageEntries[index.row()].m_id.value();
+                return entry.m_id.value();
             case 1: {
                 QString result = "";
                 bool isFirstElement = true;
 
-                for (auto id: m_dataStorage->m_touristPackageEntries[index.row()].m_touristsIds) {
+                for (auto id: entry.m_touristsIds) {
                     if (isFirstElement) {
                         isFirstElement = false;
                     } else {
@@ -49,18 +52,18 @@ QVariant TouristPackageTableModel::data(const QModelIndex &index, int role) cons
                 return result;
             }
             case 2: {
-                auto id = m_dataStorage->m_touristPackageEntries[index.row()].m_destinationId;
+                auto id = entry.m_destinationId;
 
                 return m_dataStorage->m_destinationEntries[id].m_country + ", " + m_dataStorage->m_destinationEntries[
                            id]
                        .m_city + " (ID: " + QString::number(id) + ")";
             }
             case 3:
-                return m_dataStorage->m_touristPackageEntries[index.row()].m_arrivalDate;
+                return entry.m_arrivalDate;
             case 4:
-                return m_dataStorage->m_touristPackageEntries[index.row()].m_duration;
+                return entry.m_duration;
             case 5:
-                return m_dataStorage->m_touristPackageEntries[index.row()].m_finalPrice;
+                return entry.m_finalPrice;
         }
     }
 
@@ -80,4 +83,12 @@ QVariant TouristPackageTableModel::headerData(int section, Qt::Orientation orien
     }
 
     return QAbstractTableModel::headerData(section, orientation, role);
+}
+
+void TouristPackageTableModel::removeEntry(size_t view_idx, const QModelIndex &parent) {
+    size_t real_idx = m_dataStorage->touristPackageEntryViewIndexToRealIndex(view_idx);
+
+    beginRemoveRows(parent, view_idx, view_idx);
+    m_dataStorage->deleteTouristPackageEntry(real_idx);
+    endRemoveRows();
 }

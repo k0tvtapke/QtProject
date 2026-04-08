@@ -152,7 +152,7 @@ void MainWindow::PrepareTouristTab() {
 void MainWindow::PrepareTouristPackageTab() {
     m_touristPackageTabWidget = new TouristPackageTabWidget(m_dataStorage, this);
 
-    ui->tabWidget->addTab(m_touristPackageTabWidget, "Туристы");
+    ui->tabWidget->addTab(m_touristPackageTabWidget, "Путёвки");
 }
 
 void MainWindow::on_loadDatabaseButton_clicked() {

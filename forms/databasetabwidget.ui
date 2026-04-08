@@ -101,6 +101,19 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="changeEntryButton">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Изменить Запись</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="addEntryButton">
        <property name="minimumSize">
         <size>

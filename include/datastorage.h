@@ -120,6 +120,16 @@ public:
 
     void deleteTouristPackageEntry(const size_t idx);
 
+    size_t destinationEntryViewIndexToRealIndex(const size_t view_idx);
+
+    size_t touristEntryViewIndexToRealIndex(const size_t view_idx);
+
+    size_t touristPackageEntryViewIndexToRealIndex(const size_t view_idx);
+
+    size_t getDestinationEntriesViewCount();
+    size_t getTouristEntriesViewCount();
+    size_t getTouristPackageEntriesViewCount();
+
     bool saveToFile(const QString &filename) const;
 
     bool loadFromFile(const QString &filename);

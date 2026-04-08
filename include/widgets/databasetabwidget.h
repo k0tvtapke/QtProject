@@ -4,6 +4,7 @@
 #include "models/basetablemodel.h"
 
 #include <QWidget>
+#include <QItemSelection>
 
 namespace Ui {
 class DatabaseTabWidget;
@@ -28,6 +29,9 @@ protected slots:
     virtual void on_addEntryButton_clicked() = 0;
     virtual void on_deleteEntryButton_clicked() = 0;
     virtual void on_createReportButton_clicked() = 0;
+
+private slots:
+    void onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 };
 
 #endif // DATABASETABWIDGET_H

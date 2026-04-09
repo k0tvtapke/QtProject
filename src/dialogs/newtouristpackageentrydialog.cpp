@@ -12,15 +12,57 @@ NewTouristPackageEntryDialog::NewTouristPackageEntryDialog(size_t id, DataStorag
       , m_touristPackageEntry(new TouristPackageEntry){
     ui->setupUi(this);
 
+    isNew = true;
+
     this->setWindowTitle("Добавить новую путевку");
     ui->idLineEdit->setText(QString::number(id));
 
     ui->addEntryButton->setDisabled(true);
 }
 
+NewTouristPackageEntryDialog::NewTouristPackageEntryDialog(TouristPackageEntry *touristPackageEntry, DataStorage *dataStorage, QWidget *parent)
+    : QDialog(parent)
+      , ui(new Ui::NewTouristPackageEntryDialog)
+      , m_dataStorage(dataStorage)
+      , m_touristPackageEntry(touristPackageEntry){
+    ui->setupUi(this);
+
+    isNew = false;
+
+    this->setWindowTitle("Изменить путевку");
+    
+    ui->idLineEdit->setText(QString::number(m_touristPackageEntry->m_id.value()));
+
+    m_touristsIds = m_touristPackageEntry->m_touristsIds;
+    QString labelText = "ID выбранных туристов: ";
+    bool isFirst = true;
+    for (auto id: m_touristsIds) {
+        if (isFirst) {
+            labelText += QString::number(id);
+            isFirst = false;
+        }
+        else {
+            labelText += ", " + QString::number(id);
+        }
+    }
+    ui->chosenTouristsLabel->setText(labelText);
+
+    m_destinationId = touristPackageEntry->m_destinationId;
+    ui->chooseDestinationButton->setText("ID выбранного направления: " + QString::number(m_destinationId.value()));
+
+    ui->arrivalDateDateEdit->setDate(m_touristPackageEntry->m_arrivalDate);
+    ui->durationSpinBox->setValue(m_touristPackageEntry->m_duration);
+    ui->finalPriceDoubleSpinBox->setValue(m_touristPackageEntry->m_finalPrice);
+
+    ui->addEntryButton->setText("Изменить запись");
+    ui->addEntryButton->setEnabled(true);
+}
+
 NewTouristPackageEntryDialog::~NewTouristPackageEntryDialog() {
     delete ui;
-    delete m_touristPackageEntry;
+    if (isNew) {
+        delete m_touristPackageEntry;
+    }
 }
 
 TouristPackageEntry NewTouristPackageEntryDialog::getTouristPackageEntry() const {

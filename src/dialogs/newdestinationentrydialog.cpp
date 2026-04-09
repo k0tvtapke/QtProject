@@ -7,13 +7,38 @@ NewDestinationEntryDialog::NewDestinationEntryDialog(size_t id, QWidget *parent)
       , m_destination_entry(new DestinationEntry) {
     ui->setupUi(this);
 
+    isNew = true;
+
     this->setWindowTitle("Добавить новое направление");
     ui->idLineEdit->setText(QString::number(id));
 }
 
+NewDestinationEntryDialog::NewDestinationEntryDialog(DestinationEntry *destinationEntry, QWidget *parent)
+    : QDialog(parent)
+      , ui(new Ui::NewDestinationEntryDialog)
+      , m_destination_entry(destinationEntry) {
+    ui->setupUi(this);
+
+    isNew = false;
+
+    this->setWindowTitle("Изменить направление");
+
+    ui->idLineEdit->setText(QString::number(m_destination_entry->m_id.value()));
+    ui->countryLineEdit->setText(m_destination_entry->m_country);
+    ui->cityLineEdit->setText(m_destination_entry->m_city);
+    ui->basePriceDoubleSpinBox->setValue(m_destination_entry->m_basePrice);
+    ui->foodTypeComboBox->setCurrentIndex(static_cast<int>(m_destination_entry->m_foodType));
+    ui->hotelStarsSpinBox->setValue(m_destination_entry->m_hotelStars);
+
+    ui->addEntryButton->setText("Изменить запись");
+    ui->addEntryButton->setEnabled(true);
+}
+
 NewDestinationEntryDialog::~NewDestinationEntryDialog() {
     delete ui;
-    delete m_destination_entry;
+    if (isNew) {
+        delete m_destination_entry;
+    }
 }
 
 DestinationEntry NewDestinationEntryDialog::getDestinationEntry() const {

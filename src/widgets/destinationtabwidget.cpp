@@ -1,6 +1,6 @@
 #include "widgets/destinationtabwidget.h"
 
-#include "ui_databasetabwidget.h"
+#include "ui_basetabwidget.h"
 
 #include "models/destinationtablemodel.h"
 #include "dialogs/newdestinationentrydialog.h"
@@ -8,7 +8,7 @@
 #include <QMessageBox>
 
 DestinationTabWidget::DestinationTabWidget(DataStorage *storage, QWidget *parent) : m_dataStorage(storage),
-    DatabaseTabWidget(new DestinationTableModel(storage, parent), parent) {
+    BaseTabWidget(new DestinationTableModel(storage, parent), parent) {
     ui->databaseTable->setSortingEnabled(true);
     ui->databaseTable->resizeColumnsToContents();
     ui->databaseTable->setWordWrap(true);
@@ -22,6 +22,27 @@ void DestinationTabWidget::on_addEntryButton_clicked() {
         m_dataStorage->addDestinationEntry(dialog.getDestinationEntry());
         reloadTable();
     }
+
+    resizeTable();
+}
+
+void DestinationTabWidget::on_editEntryButton_clicked() {
+    QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
+
+    QModelIndex index = selectedIndexes.first();
+    size_t real_idx = m_dataStorage->destinationEntryViewIndexToRealIndex(index.row());
+
+    NewDestinationEntryDialog dialog(
+        &m_dataStorage->m_destinationEntries[real_idx], this);
+
+    if (dialog.exec()) {
+        m_dataStorage->m_destinationEntries[real_idx] = dialog.getDestinationEntry();
+        reloadTable();
+        ui->editEntryButton->setDisabled(true);
+        ui->deleteEntryButton->setDisabled(true);
+    }
+
+    resizeTable();
 }
 
 void DestinationTabWidget::on_deleteEntryButton_clicked() {
@@ -38,6 +59,8 @@ void DestinationTabWidget::on_deleteEntryButton_clicked() {
     if (!index.isValid()) return;
 
     m_tableModel->removeEntry(index.row(), QModelIndex());
+
+    resizeTable();
 }
 
 void DestinationTabWidget::on_createReportButton_clicked() {

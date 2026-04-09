@@ -1,9 +1,12 @@
-#include "widgets/databasetabwidget.h"
-#include "ui_databasetabwidget.h"
+#include "widgets/basetabwidget.h"
 
-DatabaseTabWidget::DatabaseTabWidget(BaseTableModel *tableModel, QWidget *parent)
+#include <QMessageBox>
+
+#include "ui_basetabwidget.h"
+
+BaseTabWidget::BaseTabWidget(BaseTableModel *tableModel, QWidget *parent)
     : QWidget(parent)
-      , ui(new Ui::DatabaseTabWidget)
+      , ui(new Ui::BaseTabWidget)
       , m_tableModel(tableModel) {
     ui->setupUi(this);
 
@@ -14,26 +17,31 @@ DatabaseTabWidget::DatabaseTabWidget(BaseTableModel *tableModel, QWidget *parent
     connect(ui->databaseTable->selectionModel(),
         &QItemSelectionModel::selectionChanged,
         this,
-        &DatabaseTabWidget::onSelectionChanged);
+        &BaseTabWidget::onSelectionChanged);
 }
 
-DatabaseTabWidget::~DatabaseTabWidget() {
+BaseTabWidget::~BaseTabWidget() {
     delete ui;
     delete m_tableModel;
 }
 
-void DatabaseTabWidget::reloadTable() {
+void BaseTabWidget::reloadTable() {
     m_tableModel->reloadTable();
 }
 
-void DatabaseTabWidget::resizeTable() {
+void BaseTabWidget::resizeTable() {
     ui->databaseTable->resizeColumnsToContents();
 }
 
-void DatabaseTabWidget::onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
+void BaseTabWidget::on_editEntryButton_clicked() {
+    QMessageBox::information(this, "a", "a");
+}
+
+void BaseTabWidget::onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
     Q_UNUSED(deselected);
 
     bool hasSelection = !ui->databaseTable->selectionModel()->selectedRows().isEmpty();
 
     ui->deleteEntryButton->setEnabled(hasSelection);
+    ui->editEntryButton->setEnabled(hasSelection);
 }

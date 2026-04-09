@@ -1,5 +1,5 @@
-#ifndef DATABASETABWIDGET_H
-#define DATABASETABWIDGET_H
+#ifndef BASETABWIDGET_H
+#define BASETABWIDGET_H
 
 #include "models/basetablemodel.h"
 
@@ -7,27 +7,28 @@
 #include <QItemSelection>
 
 namespace Ui {
-class DatabaseTabWidget;
+class BaseTabWidget;
 }
 
-class DatabaseTabWidget : public QWidget
+class BaseTabWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit DatabaseTabWidget(BaseTableModel *tableModel, QWidget *parent = nullptr);
-    ~DatabaseTabWidget() override;
+    explicit BaseTabWidget(BaseTableModel *tableModel, QWidget *parent = nullptr);
+    ~BaseTabWidget() override;
 
     void reloadTable();
     void resizeTable();
 
 protected:
-    Ui::DatabaseTabWidget *ui;
+    Ui::BaseTabWidget *ui;
 
     BaseTableModel *m_tableModel;
 
 protected slots:
     virtual void on_addEntryButton_clicked() = 0;
+    virtual void on_editEntryButton_clicked() = 0;
     virtual void on_deleteEntryButton_clicked() = 0;
     virtual void on_createReportButton_clicked() = 0;
 
@@ -35,4 +36,4 @@ private slots:
     void onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 };
 
-#endif // DATABASETABWIDGET_H
+#endif // BASETABWIDGET_H

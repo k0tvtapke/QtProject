@@ -15,6 +15,8 @@ class NewTouristEntryDialog : public QDialog {
 public:
     explicit NewTouristEntryDialog(size_t id, QWidget *parent = nullptr);
 
+    explicit NewTouristEntryDialog(TouristEntry *touristEntry, QWidget *parent = nullptr);
+
     ~NewTouristEntryDialog();
 
     TouristEntry getTouristEntry() const;
@@ -25,6 +27,7 @@ private slots:
     void on_cancelButton_clicked();
 
 private:
+    bool isNew;
     TouristEntry *m_touristEntry;
 
     Ui::NewTouristEntryDialog *ui;

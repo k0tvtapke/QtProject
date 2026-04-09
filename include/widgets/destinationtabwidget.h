@@ -2,9 +2,9 @@
 #define DESTINATIONTABWIDGET_H
 
 #include "datastorage.h"
-#include "widgets/databasetabwidget.h"
+#include "widgets/basetabwidget.h"
 
-class DestinationTabWidget : public DatabaseTabWidget {
+class DestinationTabWidget : public BaseTabWidget {
     Q_OBJECT
 
 public:
@@ -14,6 +14,8 @@ private:
     DataStorage *m_dataStorage;
 
     void on_addEntryButton_clicked() override;
+
+    void on_editEntryButton_clicked() override;
 
     void on_deleteEntryButton_clicked() override;
 

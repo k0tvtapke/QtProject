@@ -15,6 +15,8 @@ class NewTouristPackageEntryDialog : public QDialog {
 public:
     explicit NewTouristPackageEntryDialog(size_t id, DataStorage *dataStorage, QWidget *parent = nullptr);
 
+    explicit NewTouristPackageEntryDialog(TouristPackageEntry *touristPackageEntry, DataStorage *dataStorage, QWidget *parent = nullptr);
+
     ~NewTouristPackageEntryDialog();
 
     TouristPackageEntry getTouristPackageEntry() const;
@@ -29,6 +31,7 @@ private slots:
     void on_chooseDestinationButton_clicked();
 
 private:
+    bool isNew;
     DataStorage *m_dataStorage;
 
     QList<uint32_t> m_touristsIds;

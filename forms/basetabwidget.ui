@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DatabaseTabWidget</class>
- <widget class="QWidget" name="DatabaseTabWidget">
+ <class>BaseTabWidget</class>
+ <widget class="QWidget" name="BaseTabWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -63,6 +63,9 @@
     <layout class="QHBoxLayout" name="lowerHorizontalLayout">
      <item>
       <widget class="QPushButton" name="createReportButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>150</width>
@@ -104,7 +107,10 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="changeEntryButton">
+      <widget class="QPushButton" name="editEntryButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>150</width>

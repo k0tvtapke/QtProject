@@ -26,6 +26,8 @@ qt_add_executable(QtProject
         ${PROJECT_SOURCES}
 )
 
+target_link_options(QtProject PRIVATE -static-libgcc -static-libstdc++)
+
 target_include_directories(QtProject PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

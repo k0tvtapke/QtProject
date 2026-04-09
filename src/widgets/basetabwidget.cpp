@@ -1,8 +1,7 @@
 #include "widgets/basetabwidget.h"
+#include "ui_basetabwidget.h"
 
 #include <QMessageBox>
-
-#include "ui_basetabwidget.h"
 
 BaseTabWidget::BaseTabWidget(BaseTableModel *tableModel, QWidget *parent)
     : QWidget(parent)
@@ -15,9 +14,9 @@ BaseTabWidget::BaseTabWidget(BaseTableModel *tableModel, QWidget *parent)
     ui->databaseTable->setSelectionMode(QAbstractItemView::SingleSelection);
 
     connect(ui->databaseTable->selectionModel(),
-        &QItemSelectionModel::selectionChanged,
-        this,
-        &BaseTabWidget::onSelectionChanged);
+            &QItemSelectionModel::selectionChanged,
+            this,
+            &BaseTabWidget::onSelectionChanged);
 }
 
 BaseTabWidget::~BaseTabWidget() {

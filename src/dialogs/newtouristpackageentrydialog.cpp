@@ -48,7 +48,7 @@ NewTouristPackageEntryDialog::NewTouristPackageEntryDialog(TouristPackageEntry *
     ui->chosenTouristsLabel->setText(labelText);
 
     m_destinationId = touristPackageEntry->m_destinationId;
-    ui->chooseDestinationButton->setText("ID выбранного направления: " + QString::number(m_destinationId.value()));
+    ui->chosenDestinationLabel->setText("ID выбранного направления: " + QString::number(m_destinationId.value()));
 
     ui->arrivalDateDateEdit->setDate(m_touristPackageEntry->m_arrivalDate);
     ui->durationSpinBox->setValue(m_touristPackageEntry->m_duration);
@@ -119,7 +119,7 @@ void NewTouristPackageEntryDialog::on_chooseDestinationButton_clicked() {
     if (entry_selection_dialog.exec()) {
         m_destinationId = entry_selection_dialog.getChosenIndex();
 
-        ui->chooseDestinationButton->setText("ID выбранного направления: " + QString::number(m_destinationId.value()));
+        ui->chosenDestinationLabel->setText("ID выбранного направления: " + QString::number(m_destinationId.value()));
     }
 
     checkIfAcceptable();

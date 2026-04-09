@@ -13,6 +13,9 @@ EntrySelectionDialog::EntrySelectionDialog(bool isSingleSelection, BaseTableMode
     if (isSingleSelection) {
         ui->databaseTable->setSelectionMode(QAbstractItemView::SingleSelection);
     }
+    else {
+        ui->databaseTable->setSelectionMode(QAbstractItemView::MultiSelection);
+    }
 
     connect(ui->databaseTable->selectionModel(),
             &QItemSelectionModel::selectionChanged,

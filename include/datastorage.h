@@ -4,9 +4,9 @@
 #include <QDate>
 #include <QList>
 #include <QFile>
+#include <optional> // для Qt 5 с C++17, иначе заменить
 
 QDataStream &operator<<(QDataStream &out, const std::optional<quint32> &opt);
-
 QDataStream &operator>>(QDataStream &in, std::optional<quint32> &opt);
 
 enum class Gender {
@@ -15,7 +15,6 @@ enum class Gender {
 };
 
 QDataStream &operator<<(QDataStream &out, const Gender &g);
-
 QDataStream &operator>>(QDataStream &in, Gender &g);
 
 enum class FoodType {
@@ -28,21 +27,20 @@ enum class FoodType {
 };
 
 QDataStream &operator<<(QDataStream &out, const FoodType &f);
-
 QDataStream &operator>>(QDataStream &in, FoodType &f);
 
 struct DestinationEntry {
     std::optional<quint32> m_id;
     QString m_country;
     QString m_city;
-    qreal m_basePrice;
+    double m_basePrice; // вместо qreal
     FoodType m_foodType;
     quint8 m_hotelStars;
     bool m_isRemoved = false;
 
     DestinationEntry(QString country,
                      QString city,
-                     qreal basePrice,
+                     double basePrice,
                      FoodType foodType,
                      quint8 hotelStars);
 
@@ -50,7 +48,6 @@ struct DestinationEntry {
 };
 
 QDataStream &operator<<(QDataStream &out, const DestinationEntry &d);
-
 QDataStream &operator>>(QDataStream &in, DestinationEntry &d);
 
 struct TouristEntry {
@@ -77,7 +74,6 @@ struct TouristEntry {
 };
 
 QDataStream &operator<<(QDataStream &out, const TouristEntry &t);
-
 QDataStream &operator>>(QDataStream &in, TouristEntry &t);
 
 struct TouristPackageEntry {
@@ -86,20 +82,19 @@ struct TouristPackageEntry {
     quint32 m_destinationId;
     QDate m_arrivalDate;
     quint32 m_duration;
-    qreal m_finalPrice;
+    double m_finalPrice; // вместо qreal
     bool m_isRemoved = false;
 
     TouristPackageEntry(QList<quint32> touristsIds,
                         quint32 destinationId,
                         QDate arrivalDate,
                         quint32 duration,
-                        qreal finalPrice);
+                        double finalPrice);
 
     TouristPackageEntry() = default;
 };
 
 QDataStream &operator<<(QDataStream &out, const TouristPackageEntry &p);
-
 QDataStream &operator>>(QDataStream &in, TouristPackageEntry &p);
 
 class DataStorage {
@@ -109,21 +104,15 @@ public:
     QList<TouristPackageEntry> m_touristPackageEntries;
 
     void addDestinationEntry(DestinationEntry new_entry);
-
     void addTouristEntry(TouristEntry new_entry);
-
     void addTouristPackageEntry(TouristPackageEntry new_entry);
 
     void deleteDestinationEntry(const size_t idx);
-
     void deleteTouristEntry(const size_t idx);
-
     void deleteTouristPackageEntry(const size_t idx);
 
     size_t destinationEntryViewIndexToRealIndex(const size_t view_idx);
-
     size_t touristEntryViewIndexToRealIndex(const size_t view_idx);
-
     size_t touristPackageEntryViewIndexToRealIndex(const size_t view_idx);
 
     size_t getDestinationEntriesViewCount();
@@ -131,7 +120,6 @@ public:
     size_t getTouristPackageEntriesViewCount();
 
     bool saveToFile(const QString &filename) const;
-
     bool loadFromFile(const QString &filename);
 };
 

@@ -5,6 +5,7 @@
 
 #include <QWidget>
 #include <QItemSelection>
+#include <QSortFilterProxyModel>
 
 namespace Ui {
 class BaseTabWidget;
@@ -25,6 +26,7 @@ protected:
     Ui::BaseTabWidget *ui;
 
     BaseTableModel *m_tableModel;
+    QSortFilterProxyModel *m_sortFilterModel;
 
 protected slots:
     virtual void on_addEntryButton_clicked() = 0;
@@ -34,6 +36,9 @@ protected slots:
 
 private slots:
     void onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void on_searchFilterComboBox_currentIndexChanged(int index);
+    void on_searchFilterLineEdit_textChanged(const QString &text);
+    void on_resetFilterPushButton_clicked();
 };
 
 #endif // BASETABWIDGET_H

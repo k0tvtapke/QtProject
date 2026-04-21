@@ -37,6 +37,10 @@ QVariant TouristTableModel::data(const QModelIndex &index, int role) const {
             case 4:
                 return kGenders[static_cast<size_t>(entry.m_gender)];
             case 5:
+                if (role == Qt::DisplayRole)
+                {
+                    return entry.m_birthDate.toString("dd.MM.yyyy");
+                }
                 return entry.m_birthDate;
         }
     }

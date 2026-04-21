@@ -24,15 +24,10 @@
          <height>0</height>
         </size>
        </property>
-       <item>
-        <property name="text">
-         <string>По всем столбцам</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="searchFilterLineEdit">
        <property name="text">
         <string/>
        </property>
@@ -42,7 +37,10 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="searchPushButton">
+      <widget class="QPushButton" name="resetFilterPushButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>150</width>
@@ -50,7 +48,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Найти</string>
+        <string>Сбросить запрос</string>
        </property>
       </widget>
      </item>
@@ -80,7 +78,7 @@
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>

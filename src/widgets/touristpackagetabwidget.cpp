@@ -12,6 +12,14 @@ TouristPackageTabWidget::TouristPackageTabWidget(DataStorage *storage, QWidget *
     ui->databaseTable->resizeColumnsToContents();
     ui->databaseTable->setWordWrap(true);
     ui->databaseTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    ui->searchFilterComboBox->addItem("Все столбцы", -1);
+    ui->searchFilterComboBox->addItem("ID", 0);
+    ui->searchFilterComboBox->addItem("Туристы", 1);
+    ui->searchFilterComboBox->addItem("Направление", 2);
+    ui->searchFilterComboBox->addItem("Дата отправки", 3);
+    ui->searchFilterComboBox->addItem("Длительность", 4);
+    ui->searchFilterComboBox->addItem("Итоговая цена", 5);
 }
 
 void TouristPackageTabWidget::on_addEntryButton_clicked() {
@@ -28,7 +36,7 @@ void TouristPackageTabWidget::on_addEntryButton_clicked() {
 void TouristPackageTabWidget::on_editEntryButton_clicked() {
     QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
 
-    QModelIndex index = selectedIndexes.first();
+    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
     size_t real_idx = m_dataStorage->touristPackageEntryViewIndexToRealIndex(index.row());
 
     NewTouristPackageEntryDialog dialog(&m_dataStorage->m_touristPackageEntries[real_idx], m_dataStorage, this);
@@ -47,7 +55,7 @@ void TouristPackageTabWidget::on_editEntryButton_clicked() {
 void TouristPackageTabWidget::on_deleteEntryButton_clicked() {
     QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
 
-    QModelIndex index = selectedIndexes.first();
+    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
 
     if (QMessageBox::question(this, "Подтверждение удаления",
                               QString("Вы действительно хотите удалить запись?"))

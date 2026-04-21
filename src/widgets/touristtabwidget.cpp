@@ -14,6 +14,14 @@ TouristTabWidget::TouristTabWidget(DataStorage *storage, QWidget *parent) : m_da
     ui->databaseTable->resizeColumnsToContents();
     ui->databaseTable->setWordWrap(true);
     ui->databaseTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    ui->searchFilterComboBox->addItem("Все столбцы", -1);
+    ui->searchFilterComboBox->addItem("ID", 0);
+    ui->searchFilterComboBox->addItem("Имя", 1);
+    ui->searchFilterComboBox->addItem("Фамилия", 2);
+    ui->searchFilterComboBox->addItem("Отчество", 3);
+    ui->searchFilterComboBox->addItem("Пол", 4);
+    ui->searchFilterComboBox->addItem("Дата рождения", 5);
 }
 
 void TouristTabWidget::on_addEntryButton_clicked() {
@@ -30,7 +38,7 @@ void TouristTabWidget::on_addEntryButton_clicked() {
 void TouristTabWidget::on_editEntryButton_clicked() {
     QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
 
-    QModelIndex index = selectedIndexes.first();
+    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
     size_t real_idx = m_dataStorage->touristEntryViewIndexToRealIndex(index.row());
 
     NewTouristEntryDialog dialog(
@@ -49,7 +57,7 @@ void TouristTabWidget::on_editEntryButton_clicked() {
 void TouristTabWidget::on_deleteEntryButton_clicked() {
     QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
 
-    QModelIndex index = selectedIndexes.first();
+    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
 
     if (QMessageBox::question(this, "Подтверждение удаления",
                               QString("Вы действительно хотите удалить запись?"))

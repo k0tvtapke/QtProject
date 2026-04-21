@@ -6,6 +6,7 @@
 #include "dialogs/newdestinationentrydialog.h"
 
 #include <QMessageBox>
+#include <QSortFilterProxyModel>
 
 DestinationTabWidget::DestinationTabWidget(DataStorage *storage, QWidget *parent) : m_dataStorage(storage),
     BaseTabWidget(new DestinationTableModel(storage, parent), parent) {
@@ -13,6 +14,14 @@ DestinationTabWidget::DestinationTabWidget(DataStorage *storage, QWidget *parent
     ui->databaseTable->resizeColumnsToContents();
     ui->databaseTable->setWordWrap(true);
     ui->databaseTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    ui->searchFilterComboBox->addItem("Все столбцы", -1);
+    ui->searchFilterComboBox->addItem("ID", 0);
+    ui->searchFilterComboBox->addItem("Страна", 1);
+    ui->searchFilterComboBox->addItem("Город", 2);
+    ui->searchFilterComboBox->addItem("Базовая цена", 3);
+    ui->searchFilterComboBox->addItem("Тип питания", 4);
+    ui->searchFilterComboBox->addItem("Кол-во звезд отеля", 5);
 }
 
 void DestinationTabWidget::on_addEntryButton_clicked() {
@@ -29,7 +38,7 @@ void DestinationTabWidget::on_addEntryButton_clicked() {
 void DestinationTabWidget::on_editEntryButton_clicked() {
     QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
 
-    QModelIndex index = selectedIndexes.first();
+    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
     size_t real_idx = m_dataStorage->destinationEntryViewIndexToRealIndex(index.row());
 
     NewDestinationEntryDialog dialog(
@@ -48,7 +57,7 @@ void DestinationTabWidget::on_editEntryButton_clicked() {
 void DestinationTabWidget::on_deleteEntryButton_clicked() {
     QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
 
-    QModelIndex index = selectedIndexes.first();
+    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
 
     if (QMessageBox::question(this, "Подтверждение удаления",
                               QString("Вы действительно хотите удалить запись?"))

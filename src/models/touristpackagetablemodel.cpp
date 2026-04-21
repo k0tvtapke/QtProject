@@ -59,7 +59,11 @@ QVariant TouristPackageTableModel::data(const QModelIndex &index, int role) cons
                        .m_city + " (ID: " + QString::number(id) + ")";
             }
             case 3:
-                return entry.m_arrivalDate;
+            if (role == Qt::DisplayRole)
+            {
+                return entry.m_arrivalDate.toString("dd.MM.yyyy");
+            }
+            return entry.m_arrivalDate;
             case 4:
                 return entry.m_duration;
             case 5:

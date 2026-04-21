@@ -36,7 +36,11 @@ QVariant DestinationTableModel::data(const QModelIndex &index, int role) const {
             case 3:
                 return entry.m_basePrice;
             case 4:
-                return kFoodTypes[static_cast<size_t>(entry.m_foodType)];
+                if (role == Qt::DisplayRole)
+                {
+                    return kFoodTypes[static_cast<size_t>(entry.m_foodType)];
+                }
+                return static_cast<quint32>(entry.m_foodType);
             case 5:
                 return entry.m_hotelStars;
         }

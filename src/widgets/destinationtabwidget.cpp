@@ -4,6 +4,7 @@
 
 #include "models/destinationtablemodel.h"
 #include "dialogs/newdestinationentrydialog.h"
+#include "dialogs/reportdialog.h"
 
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
@@ -89,7 +90,7 @@ void DestinationTabWidget::on_createReportButton_clicked()
 
     DestinationEntry entry = m_dataStorage->m_destinationEntries[index.row()];
 
-    QString result = QString("Данные о направлении(ID %1):\n"
+    QString reportText = QString("Данные о направлении (ID %1):\n"
             "-Страна: %2\n"
             "-Город: %3\n"
             "-Базовая цена: %4\n"
@@ -100,5 +101,6 @@ void DestinationTabWidget::on_createReportButton_clicked()
                                          arg(kFoodTypes[static_cast<size_t>(entry.m_foodType)]).
                                          arg(entry.m_hotelStars);
 
-    QMessageBox::information(this, "Отчет", result);
+    ReportDialog dialog(this, reportText);
+    dialog.exec();
 }

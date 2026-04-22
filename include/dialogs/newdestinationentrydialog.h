@@ -22,6 +22,8 @@ public:
     DestinationEntry getDestinationEntry() const;
 
 private slots:
+    void onLineEditChanged();
+
     void on_addEntryButton_clicked();
 
     void on_cancelButton_clicked();

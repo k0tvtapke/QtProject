@@ -11,6 +11,19 @@ NewTouristEntryDialog::NewTouristEntryDialog(size_t id, QWidget *parent)
 
     this->setWindowTitle("Добавить нового туриста");
     ui->idLineEdit->setText(QString::number(id));
+
+    QRegularExpression nameRe("^[А-ЯЁ][а-яё]*$");
+    ui->firstNameLineEdit->setValidator(new QRegularExpressionValidator(nameRe, this));
+    ui->lastNameLineEdit->setValidator(new QRegularExpressionValidator(nameRe, this));
+
+    QRegularExpression surnameRe("^([А-ЯЁ][а-яё]*)?$");
+    ui->surnameLineEdit->setValidator(new QRegularExpressionValidator(surnameRe, this));
+
+    ui->addEntryButton->setDisabled(true);
+
+    connect(ui->firstNameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
+    connect(ui->lastNameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
+    connect(ui->surnameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
 }
 
 NewTouristEntryDialog::NewTouristEntryDialog(TouristEntry *touristEntry, QWidget *parent)
@@ -32,6 +45,17 @@ NewTouristEntryDialog::NewTouristEntryDialog(TouristEntry *touristEntry, QWidget
 
     ui->addEntryButton->setText("Изменить запись");
     ui->addEntryButton->setEnabled(true);
+
+    QRegularExpression nameRe("^[А-ЯЁ][а-яё]*$");
+    ui->firstNameLineEdit->setValidator(new QRegularExpressionValidator(nameRe, this));
+    ui->lastNameLineEdit->setValidator(new QRegularExpressionValidator(nameRe, this));
+
+    QRegularExpression surnameRe("^([А-ЯЁ][а-яё]*)?$");
+    ui->surnameLineEdit->setValidator(new QRegularExpressionValidator(surnameRe, this));
+
+    connect(ui->firstNameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
+    connect(ui->lastNameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
+    connect(ui->surnameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
 }
 
 NewTouristEntryDialog::~NewTouristEntryDialog() {
@@ -43,6 +67,47 @@ NewTouristEntryDialog::~NewTouristEntryDialog() {
 
 TouristEntry NewTouristEntryDialog::getTouristEntry() const {
     return *m_touristEntry;
+}
+
+void NewTouristEntryDialog::onLineEditChanged()
+{
+    int flagsSum = 0;
+    if (ui->firstNameLineEdit->hasAcceptableInput())
+    {
+        ui->firstNameLineEdit->setStyleSheet("");
+        flagsSum++;
+    }
+    else
+    {
+        ui->firstNameLineEdit->setStyleSheet("border: 1px solid red;");
+    }
+    if (ui->lastNameLineEdit->hasAcceptableInput())
+    {
+        ui->lastNameLineEdit->setStyleSheet("");
+        flagsSum++;
+    }
+    else
+    {
+        ui->lastNameLineEdit->setStyleSheet("border: 1px solid red;");
+    }
+    if (ui->surnameLineEdit->hasAcceptableInput())
+    {
+        ui->surnameLineEdit->setStyleSheet("");
+        flagsSum++;
+    }
+    else
+    {
+        ui->surnameLineEdit->setStyleSheet("border: 1px solid red;");
+    }
+
+    if (flagsSum == 3)
+    {
+        ui->addEntryButton->setEnabled(true);
+    }
+    else
+    {
+        ui->addEntryButton->setDisabled(true);
+    }
 }
 
 void NewTouristEntryDialog::on_addEntryButton_clicked() {

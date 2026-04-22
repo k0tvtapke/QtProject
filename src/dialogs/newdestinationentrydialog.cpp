@@ -1,22 +1,33 @@
 #include "dialogs/newdestinationentrydialog.h"
 #include "ui_newdestinationentrydialog.h"
 
-NewDestinationEntryDialog::NewDestinationEntryDialog(size_t id, QWidget *parent)
+NewDestinationEntryDialog::NewDestinationEntryDialog(size_t id, QWidget* parent)
     : QDialog(parent)
       , ui(new Ui::NewDestinationEntryDialog)
-      , m_destination_entry(new DestinationEntry) {
+      , m_destination_entry(new DestinationEntry)
+{
     ui->setupUi(this);
 
     isNew = true;
 
     this->setWindowTitle("Добавить новое направление");
     ui->idLineEdit->setText(QString::number(id));
+
+    QRegularExpression placeRe("^[А-ЯЁ][а-яё]*([ \\-'][А-ЯЁа-яё][а-яё]*)*$");
+    ui->countryLineEdit->setValidator(new QRegularExpressionValidator(placeRe, this));
+    ui->cityLineEdit->setValidator(new QRegularExpressionValidator(placeRe, this));
+
+    ui->addEntryButton->setDisabled(true);
+
+    connect(ui->countryLineEdit, &QLineEdit::textEdited, this, &NewDestinationEntryDialog::onLineEditChanged);
+    connect(ui->cityLineEdit, &QLineEdit::textEdited, this, &NewDestinationEntryDialog::onLineEditChanged);
 }
 
-NewDestinationEntryDialog::NewDestinationEntryDialog(DestinationEntry *destinationEntry, QWidget *parent)
+NewDestinationEntryDialog::NewDestinationEntryDialog(DestinationEntry* destinationEntry, QWidget* parent)
     : QDialog(parent)
       , ui(new Ui::NewDestinationEntryDialog)
-      , m_destination_entry(destinationEntry) {
+      , m_destination_entry(destinationEntry)
+{
     ui->setupUi(this);
 
     isNew = false;
@@ -32,20 +43,64 @@ NewDestinationEntryDialog::NewDestinationEntryDialog(DestinationEntry *destinati
 
     ui->addEntryButton->setText("Изменить запись");
     ui->addEntryButton->setEnabled(true);
+
+    QRegularExpression placeRe("^[А-ЯЁ][а-яё]*([ \\-'][А-ЯЁа-яё][а-яё]*)*$");
+    ui->countryLineEdit->setValidator(new QRegularExpressionValidator(placeRe, this));
+    ui->cityLineEdit->setValidator(new QRegularExpressionValidator(placeRe, this));
+
+    connect(ui->countryLineEdit, &QLineEdit::textEdited, this, &NewDestinationEntryDialog::onLineEditChanged);
+    connect(ui->cityLineEdit, &QLineEdit::textEdited, this, &NewDestinationEntryDialog::onLineEditChanged);
+
 }
 
-NewDestinationEntryDialog::~NewDestinationEntryDialog() {
+NewDestinationEntryDialog::~NewDestinationEntryDialog()
+{
     delete ui;
-    if (isNew) {
+    if (isNew)
+    {
         delete m_destination_entry;
     }
 }
 
-DestinationEntry NewDestinationEntryDialog::getDestinationEntry() const {
+DestinationEntry NewDestinationEntryDialog::getDestinationEntry() const
+{
     return *m_destination_entry;
 }
 
-void NewDestinationEntryDialog::on_addEntryButton_clicked() {
+void NewDestinationEntryDialog::onLineEditChanged()
+{
+    int flagsSum = 0;
+    if (ui->countryLineEdit->hasAcceptableInput())
+    {
+        ui->countryLineEdit->setStyleSheet("");
+        flagsSum++;
+    }
+    else
+    {
+        ui->countryLineEdit->setStyleSheet("border: 1px solid red;");
+    }
+    if (ui->cityLineEdit->hasAcceptableInput())
+    {
+        ui->cityLineEdit->setStyleSheet("");
+        flagsSum++;
+    }
+    else
+    {
+        ui->cityLineEdit->setStyleSheet("border: 1px solid red;");
+    }
+
+    if (flagsSum == 2)
+    {
+        ui->addEntryButton->setEnabled(true);
+    }
+    else
+    {
+        ui->addEntryButton->setDisabled(true);
+    }
+}
+
+void NewDestinationEntryDialog::on_addEntryButton_clicked()
+{
     m_destination_entry->m_country = ui->countryLineEdit->text();
     m_destination_entry->m_city = ui->cityLineEdit->text();
     m_destination_entry->m_basePrice = ui->basePriceDoubleSpinBox->value();
@@ -56,6 +111,7 @@ void NewDestinationEntryDialog::on_addEntryButton_clicked() {
 }
 
 
-void NewDestinationEntryDialog::on_cancelButton_clicked() {
+void NewDestinationEntryDialog::on_cancelButton_clicked()
+{
     reject();
 }

@@ -3,6 +3,7 @@
 
 #include "models/touristtablemodel.h"
 #include "dialogs/newtouristentrydialog.h"
+#include "dialogs/reportdialog.h"
 
 #include <QMessageBox>
 
@@ -90,18 +91,19 @@ void TouristTabWidget::on_createReportButton_clicked()
     TouristEntry entry = m_dataStorage->m_touristEntries[index.row()];
 
 
-    QString result = QString("Данные о туристе(ID %1):\n"
+    QString reportText = QString("Данные о туристе (ID %1):\n"
             "-Имя: %2\n"
             "-Фамилия: %3\n").arg(entry.m_id.value()).
                               arg(entry.m_firstName, entry.m_lastName);
 
     if (!entry.m_surname.isEmpty())
     {
-        result += QString("-Отчество: %1\n").arg(entry.m_surname);
+        reportText += QString("-Отчество: %1\n").arg(entry.m_surname);
     }
-    result += QString("-Пол: %5\n"
+    reportText += QString("-Пол: %5\n"
         "-Дата рождения: %6\n").arg(kGenders[static_cast<size_t>(entry.m_gender)],
                                     entry.m_birthDate.toString("dd.MM.yyyy"));
 
-    QMessageBox::information(this, "Отчет", result);
+    ReportDialog dialog(this, reportText);
+    dialog.exec();
 }

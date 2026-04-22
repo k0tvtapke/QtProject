@@ -5,6 +5,7 @@
 #include "models/touristtablemodel.h"
 #include "models/touristpackagemodel.h"
 #include "dialogs/newtouristpackageentrydialog.h"
+#include "dialogs/reportdialog.h"
 
 #include <QMessageBox>
 
@@ -89,30 +90,30 @@ void TouristPackageTabWidget::on_createReportButton_clicked()
 
     TouristPackageEntry touristPackageEntry = m_dataStorage->m_touristPackageEntries[index.row()];
 
-    QString result = QString("Данные о путевке(ID %1):\n"
+    QString reportText = QString("Данные о путевке (ID %1):\n"
         "Список туристов:\n").arg(touristPackageEntry.m_id.value());
 
     for (quint32 i = 0; i < touristPackageEntry.m_touristsIds.length(); i++)
     {
         TouristEntry touristEntry = m_dataStorage->m_touristEntries[touristPackageEntry.m_touristsIds[i]];
 
-        result += QString("    Турист %1(ID %2):\n").arg(i + 1).arg(touristPackageEntry.m_touristsIds[i]);
+        reportText += QString("    Турист %1 (ID %2):\n").arg(i + 1).arg(touristPackageEntry.m_touristsIds[i]);
 
-        result += QString("        -Имя: %1\n"
+        reportText += QString("        -Имя: %1\n"
             "        -Фамилия: %2\n").arg(touristEntry.m_firstName, touristEntry.m_lastName);
 
         if (!touristEntry.m_surname.isEmpty())
         {
-            result += QString("        -Отчество: %1\n").arg(touristEntry.m_surname);
+            reportText += QString("        -Отчество: %1\n").arg(touristEntry.m_surname);
         }
-        result += QString("        -Пол: %5\n"
+        reportText += QString("        -Пол: %5\n"
             "        -Дата рождения: %6\n").arg(kGenders[static_cast<size_t>(touristEntry.m_gender)],
                                             touristEntry.m_birthDate.toString("dd.MM.yyyy"));
     }
 
     DestinationEntry destinationEntry = m_dataStorage->m_destinationEntries[index.row()];
 
-    result += QString("Данные о направлении(ID %1):\n"
+    reportText += QString("Данные о направлении (ID %1):\n"
             "    -Страна: %2\n"
             "    -Город: %3\n"
             "    -Базовая цена: %4\n"
@@ -123,11 +124,12 @@ void TouristPackageTabWidget::on_createReportButton_clicked()
                                            arg(kFoodTypes[static_cast<size_t>(destinationEntry.m_foodType)]).
                                            arg(destinationEntry.m_hotelStars);
 
-    result += QString("-Дата отправки: %1\n"
+    reportText += QString("-Дата отправки: %1\n"
             "-Длительность: %2\n"
             "-Итоговая цена: %3\n").arg(touristPackageEntry.m_arrivalDate.toString("dd.MM.yyyy")).
                                    arg(touristPackageEntry.m_duration).
                                    arg(touristPackageEntry.m_finalPrice);
 
-    QMessageBox::information(this, "Отчет", result);
+    ReportDialog dialog(this, reportText);
+    dialog.exec();
 }

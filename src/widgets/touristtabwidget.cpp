@@ -4,6 +4,7 @@
 #include "models/touristtablemodel.h"
 #include "dialogs/newtouristentrydialog.h"
 #include "dialogs/reportdialog.h"
+#include "dialogs/touristchartdialog.h"
 
 #include <QMessageBox>
 
@@ -24,6 +25,9 @@ TouristTabWidget::TouristTabWidget(DataStorage* storage, QWidget* parent) : m_da
     ui->searchFilterComboBox->addItem("Отчество", 3);
     ui->searchFilterComboBox->addItem("Пол", 4);
     ui->searchFilterComboBox->addItem("Дата рождения", 5);
+
+    ui->showChartButton->setEnabled(true);
+    connect(ui->showChartButton, &QPushButton::pressed, this, &TouristTabWidget::onShowChartButtonClicked);
 }
 
 void TouristTabWidget::on_addEntryButton_clicked()
@@ -105,5 +109,12 @@ void TouristTabWidget::on_createReportButton_clicked()
                                     entry.m_birthDate.toString("dd.MM.yyyy"));
 
     ReportDialog dialog(this, reportText);
+    dialog.exec();
+}
+
+void TouristTabWidget::onShowChartButtonClicked()
+{
+    TouristChartDialog dialog(m_dataStorage, this);
+
     dialog.exec();
 }

@@ -5,6 +5,7 @@
 #include "models/destinationtablemodel.h"
 #include "dialogs/newdestinationentrydialog.h"
 #include "dialogs/reportdialog.h"
+#include "dialogs/destinationchartdialog.h"
 
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
@@ -24,6 +25,9 @@ DestinationTabWidget::DestinationTabWidget(DataStorage* storage, QWidget* parent
     ui->searchFilterComboBox->addItem("Базовая цена", 3);
     ui->searchFilterComboBox->addItem("Тип питания", 4);
     ui->searchFilterComboBox->addItem("Кол-во звезд отеля", 5);
+
+    ui->showChartButton->setEnabled(true);
+    connect(ui->showChartButton, &QPushButton::pressed, this, &DestinationTabWidget::onShowChartButtonClicked);
 }
 
 void DestinationTabWidget::on_addEntryButton_clicked()
@@ -102,5 +106,12 @@ void DestinationTabWidget::on_createReportButton_clicked()
                                          arg(entry.m_hotelStars);
 
     ReportDialog dialog(this, reportText);
+    dialog.exec();
+}
+
+void DestinationTabWidget::onShowChartButtonClicked()
+{
+    DestinationChartDialog dialog(m_dataStorage, this);
+
     dialog.exec();
 }

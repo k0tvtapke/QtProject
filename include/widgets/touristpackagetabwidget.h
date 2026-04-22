@@ -20,6 +20,9 @@ private:
     void on_deleteEntryButton_clicked() override;
 
     void on_createReportButton_clicked() override;
+
+private slots:
+    void onShowChartButtonClicked();
 };
 
 #endif // TOURISTPACKAGETABWIDGET_H

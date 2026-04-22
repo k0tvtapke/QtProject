@@ -4,14 +4,15 @@
 #include "datastorage.h"
 #include "widgets/basetabwidget.h"
 
-class DestinationTabWidget : public BaseTabWidget {
+class DestinationTabWidget : public BaseTabWidget
+{
     Q_OBJECT
 
 public:
-    explicit DestinationTabWidget(DataStorage *storage, QWidget *parent = nullptr);
+    explicit DestinationTabWidget(DataStorage* storage, QWidget* parent = nullptr);
 
 protected:
-    DataStorage *m_dataStorage;
+    DataStorage* m_dataStorage;
 
     void on_addEntryButton_clicked() override;
 
@@ -20,6 +21,9 @@ protected:
     void on_deleteEntryButton_clicked() override;
 
     void on_createReportButton_clicked() override;
+
+private slots:
+    void onShowChartButtonClicked();
 };
 
 #endif // DESTINATIONTABWIDGET_H

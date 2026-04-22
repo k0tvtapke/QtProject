@@ -6,6 +6,7 @@
 #include "models/touristpackagemodel.h"
 #include "dialogs/newtouristpackageentrydialog.h"
 #include "dialogs/reportdialog.h"
+#include "dialogs/touristpackagechartdialog.h"
 
 #include <QMessageBox>
 
@@ -24,6 +25,9 @@ TouristPackageTabWidget::TouristPackageTabWidget(DataStorage* storage, QWidget* 
     ui->searchFilterComboBox->addItem("Дата отправки", 3);
     ui->searchFilterComboBox->addItem("Длительность", 4);
     ui->searchFilterComboBox->addItem("Итоговая цена", 5);
+
+    ui->showChartButton->setEnabled(true);
+    connect(ui->showChartButton, &QPushButton::pressed, this, &TouristPackageTabWidget::onShowChartButtonClicked);
 }
 
 void TouristPackageTabWidget::on_addEntryButton_clicked()
@@ -131,5 +135,12 @@ void TouristPackageTabWidget::on_createReportButton_clicked()
                                    arg(touristPackageEntry.m_finalPrice);
 
     ReportDialog dialog(this, reportText);
+    dialog.exec();
+}
+
+void TouristPackageTabWidget::onShowChartButtonClicked()
+{
+    TouristPackageChartDialog dialog(m_dataStorage, this);
+
     dialog.exec();
 }

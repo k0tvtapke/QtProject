@@ -40,6 +40,11 @@ NewTouristPackageEntryDialog::NewTouristPackageEntryDialog(TouristPackageEntry* 
     QString labelText = "ID выбранных туристов: ";
     for (auto id : m_touristsIds)
     {
+        if (id >= static_cast<quint32>(m_dataStorage->m_touristEntries.size()))
+        {
+            continue;
+        }
+
         if (m_dataStorage->m_touristEntries[id].m_surname.isEmpty())
         {
             labelText += QString("\n    %1 %2 (ID %3)").arg(
@@ -59,13 +64,20 @@ NewTouristPackageEntryDialog::NewTouristPackageEntryDialog(TouristPackageEntry* 
     ui->chosenTouristsLabel->setText(labelText);
 
     m_destinationId = touristPackageEntry->m_destinationId;
-    ui->chosenDestinationLabel->setText(QString("Выбранное направление:\n"
-        "    %1, %2 (ID %3)\n"
-        "    Базовая цена: %4").arg(m_dataStorage->m_destinationEntries[m_destinationId.value()].m_country,
-                                    m_dataStorage->m_destinationEntries[m_destinationId.value()].m_city,
-                                    QString::number(m_destinationId.value()),
-                                    QString::number(
-                                        m_dataStorage->m_destinationEntries[m_destinationId.value()].m_basePrice)));
+    if (m_destinationId.value() >= static_cast<quint32>(m_dataStorage->m_destinationEntries.size()))
+    {
+        ui->chosenDestinationLabel->setText(QString("Выбранное направление:\n    "));
+    }
+    else
+    {
+        ui->chosenDestinationLabel->setText(QString("Выбранное направление:\n"
+            "    %1, %2 (ID %3)\n"
+            "    Базовая цена: %4").arg(m_dataStorage->m_destinationEntries[m_destinationId.value()].m_country,
+                                        m_dataStorage->m_destinationEntries[m_destinationId.value()].m_city,
+                                        QString::number(m_destinationId.value()),
+                                        QString::number(
+                                            m_dataStorage->m_destinationEntries[m_destinationId.value()].m_basePrice)));
+    }
 
     ui->arrivalDateDateEdit->setDate(m_touristPackageEntry->m_arrivalDate);
     ui->durationSpinBox->setValue(m_touristPackageEntry->m_duration);
@@ -119,6 +131,11 @@ void NewTouristPackageEntryDialog::on_chooseTouristButton_clicked()
         QString labelText = "ID выбранных туристов: ";
         for (auto id : m_touristsIds)
         {
+            if (id >= static_cast<quint32>(m_dataStorage->m_touristEntries.size()))
+            {
+                continue;
+            }
+
             if (m_dataStorage->m_touristEntries[id].m_surname.isEmpty())
             {
                 labelText += QString("\n    %1 %2 (ID %3)").arg(
@@ -152,13 +169,20 @@ void NewTouristPackageEntryDialog::on_chooseDestinationButton_clicked()
     {
         m_destinationId = entry_selection_dialog.getChosenIndex();
 
-        ui->chosenDestinationLabel->setText(QString("Выбранное направление:\n"
-        "    %1, %2 (ID %3)\n"
-        "    Базовая цена: %4").arg(m_dataStorage->m_destinationEntries[m_destinationId.value()].m_country,
-                                    m_dataStorage->m_destinationEntries[m_destinationId.value()].m_city,
-                                    QString::number(m_destinationId.value()),
-                                    QString::number(
-                                        m_dataStorage->m_destinationEntries[m_destinationId.value()].m_basePrice)));
+        if (m_destinationId.value() >= static_cast<quint32>(m_dataStorage->m_destinationEntries.size()))
+        {
+            ui->chosenDestinationLabel->setText(QString("Выбранное направление:\n    "));
+        }
+        else
+        {
+            ui->chosenDestinationLabel->setText(QString("Выбранное направление:\n"
+            "    %1, %2 (ID %3)\n"
+            "    Базовая цена: %4").arg(m_dataStorage->m_destinationEntries[m_destinationId.value()].m_country,
+                                        m_dataStorage->m_destinationEntries[m_destinationId.value()].m_city,
+                                        QString::number(m_destinationId.value()),
+                                        QString::number(
+                                            m_dataStorage->m_destinationEntries[m_destinationId.value()].m_basePrice)));
+        }
     }
 
     checkIfAcceptable();

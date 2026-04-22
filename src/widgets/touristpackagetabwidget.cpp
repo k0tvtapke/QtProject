@@ -92,16 +92,25 @@ void TouristPackageTabWidget::on_createReportButton_clicked()
 
     if (!index.isValid()) return;
 
-    TouristPackageEntry touristPackageEntry = m_dataStorage->m_touristPackageEntries[index.row()];
+    const size_t real_idx = m_dataStorage->touristPackageEntryViewIndexToRealIndex(static_cast<size_t>(index.row()));
+    if (real_idx >= static_cast<size_t>(m_dataStorage->m_touristPackageEntries.size())) return;
+
+    TouristPackageEntry touristPackageEntry = m_dataStorage->m_touristPackageEntries[real_idx];
 
     QString reportText = QString("Данные о путевке (ID %1):\n"
         "Список туристов:\n").arg(touristPackageEntry.m_id.value());
 
     for (quint32 i = 0; i < touristPackageEntry.m_touristsIds.length(); i++)
     {
-        TouristEntry touristEntry = m_dataStorage->m_touristEntries[touristPackageEntry.m_touristsIds[i]];
+        const quint32 touristIdx = touristPackageEntry.m_touristsIds[i];
+        if (touristIdx >= static_cast<quint32>(m_dataStorage->m_touristEntries.size()))
+        {
+            continue;
+        }
 
-        reportText += QString("    Турист %1 (ID %2):\n").arg(i + 1).arg(touristPackageEntry.m_touristsIds[i]);
+        TouristEntry touristEntry = m_dataStorage->m_touristEntries[touristIdx];
+
+        reportText += QString("    Турист %1 (ID %2):\n").arg(i + 1).arg(touristIdx);
 
         reportText += QString("        -Имя: %1\n"
             "        -Фамилия: %2\n").arg(touristEntry.m_firstName, touristEntry.m_lastName);
@@ -115,18 +124,25 @@ void TouristPackageTabWidget::on_createReportButton_clicked()
                                             touristEntry.m_birthDate.toString("dd.MM.yyyy"));
     }
 
-    DestinationEntry destinationEntry = m_dataStorage->m_destinationEntries[index.row()];
+    const quint32 destinationIdx = touristPackageEntry.m_destinationId;
+    if (destinationIdx >= static_cast<quint32>(m_dataStorage->m_destinationEntries.size()))
+    {
+    }
+    else
+    {
+        DestinationEntry destinationEntry = m_dataStorage->m_destinationEntries[destinationIdx];
 
-    reportText += QString("Данные о направлении (ID %1):\n"
-            "    -Страна: %2\n"
-            "    -Город: %3\n"
-            "    -Базовая цена: %4\n"
-            "    -Тип питания: %5\n"
-            "    -Кол-во звезд отеля: %6\n").arg(destinationEntry.m_id.value()).
-                                           arg(destinationEntry.m_country, destinationEntry.m_city).
-                                           arg(destinationEntry.m_basePrice).
-                                           arg(kFoodTypes[static_cast<size_t>(destinationEntry.m_foodType)]).
-                                           arg(destinationEntry.m_hotelStars);
+        reportText += QString("Данные о направлении (ID %1):\n"
+                "    -Страна: %2\n"
+                "    -Город: %3\n"
+                "    -Базовая цена: %4\n"
+                "    -Тип питания: %5\n"
+                "    -Кол-во звезд отеля: %6\n").arg(destinationEntry.m_id.value()).
+                                               arg(destinationEntry.m_country, destinationEntry.m_city).
+                                               arg(destinationEntry.m_basePrice).
+                                               arg(kFoodTypes[static_cast<size_t>(destinationEntry.m_foodType)]).
+                                               arg(destinationEntry.m_hotelStars);
+    }
 
     reportText += QString("-Дата отправки: %1\n"
             "-Длительность: %2\n"

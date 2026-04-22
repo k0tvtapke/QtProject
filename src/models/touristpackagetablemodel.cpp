@@ -37,7 +37,7 @@ QVariant TouristPackageTableModel::data(const QModelIndex& index, int role) cons
         switch (index.column())
         {
         case 0:
-            return entry.m_id.value();
+            return entry.m_id.has_value() ? QVariant::fromValue(entry.m_id.value()) : QVariant();
         case 1:
             {
                 QString result = "";
@@ -45,7 +45,7 @@ QVariant TouristPackageTableModel::data(const QModelIndex& index, int role) cons
 
                 if (role == Qt::EditRole)
                 {
-                    result += entry.m_touristsIds.length();
+                    result += QString::number(entry.m_touristsIds.length());
                 }
 
                 for (auto id : entry.m_touristsIds)
@@ -58,13 +58,18 @@ QVariant TouristPackageTableModel::data(const QModelIndex& index, int role) cons
                     {
                         result += ",\n";
                     }
-                    result += m_dataStorage->m_touristEntries[id].m_lastName + " " +
-                        m_dataStorage->m_touristEntries[id].m_firstName +
-                        (m_dataStorage->m_touristEntries[id].m_surname.isEmpty()
-                             ? ""
-                             : (" " +
-                                 m_dataStorage->m_touristEntries[id].m_surname)) + " (ID: " + QString::number(id) +
-                        ")";
+                    if (id >= static_cast<quint32>(m_dataStorage->m_touristEntries.size()))
+                    {
+                        continue;
+                    }
+
+                    const auto &t = m_dataStorage->m_touristEntries[id];
+                    result += t.m_lastName + " " +
+                              t.m_firstName +
+                              (t.m_surname.isEmpty()
+                                   ? ""
+                                   : (" " + t.m_surname)) +
+                              " (ID: " + QString::number(id) + ")";
                 }
 
                 return result;
@@ -73,9 +78,13 @@ QVariant TouristPackageTableModel::data(const QModelIndex& index, int role) cons
             {
                 auto id = entry.m_destinationId;
 
-                return m_dataStorage->m_destinationEntries[id].m_country + ", " + m_dataStorage->m_destinationEntries[
-                        id]
-                    .m_city + " (ID: " + QString::number(id) + ")";
+                if (id >= static_cast<quint32>(m_dataStorage->m_destinationEntries.size()))
+                {
+                    return QVariant();
+                }
+
+                const auto &d = m_dataStorage->m_destinationEntries[id];
+                return d.m_country + ", " + d.m_city + " (ID: " + QString::number(id) + ")";
             }
         case 3:
             if (role == Qt::DisplayRole)

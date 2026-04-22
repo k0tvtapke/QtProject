@@ -10,7 +10,7 @@ class DestinationTabWidget : public BaseTabWidget {
 public:
     explicit DestinationTabWidget(DataStorage *storage, QWidget *parent = nullptr);
 
-private:
+protected:
     DataStorage *m_dataStorage;
 
     void on_addEntryButton_clicked() override;

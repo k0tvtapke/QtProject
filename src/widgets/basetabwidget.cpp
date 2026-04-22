@@ -49,6 +49,7 @@ void BaseTabWidget::onSelectionChanged(const QItemSelection &selected, const QIt
 
     ui->deleteEntryButton->setEnabled(hasSelection);
     ui->editEntryButton->setEnabled(hasSelection);
+    ui->createReportButton->setEnabled(hasSelection);
 }
 
 void BaseTabWidget::on_searchFilterComboBox_currentIndexChanged(int index)

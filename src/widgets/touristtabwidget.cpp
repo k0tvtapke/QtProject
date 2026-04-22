@@ -6,10 +6,11 @@
 
 #include <QMessageBox>
 
-TouristTabWidget::TouristTabWidget(DataStorage *storage, QWidget *parent) : m_dataStorage(storage),
+TouristTabWidget::TouristTabWidget(DataStorage* storage, QWidget* parent) : m_dataStorage(storage),
                                                                             BaseTabWidget(
                                                                                 new TouristTableModel(storage, parent),
-                                                                                parent) {
+                                                                                parent)
+{
     ui->databaseTable->setSortingEnabled(true);
     ui->databaseTable->resizeColumnsToContents();
     ui->databaseTable->setWordWrap(true);
@@ -24,10 +25,12 @@ TouristTabWidget::TouristTabWidget(DataStorage *storage, QWidget *parent) : m_da
     ui->searchFilterComboBox->addItem("Дата рождения", 5);
 }
 
-void TouristTabWidget::on_addEntryButton_clicked() {
+void TouristTabWidget::on_addEntryButton_clicked()
+{
     NewTouristEntryDialog dialog(m_dataStorage->m_touristEntries.size(), this);
 
-    if (dialog.exec()) {
+    if (dialog.exec())
+    {
         m_dataStorage->addTouristEntry(dialog.getTouristEntry());
         reloadTable();
     }
@@ -35,7 +38,8 @@ void TouristTabWidget::on_addEntryButton_clicked() {
     resizeTable();
 }
 
-void TouristTabWidget::on_editEntryButton_clicked() {
+void TouristTabWidget::on_editEntryButton_clicked()
+{
     QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
 
     QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
@@ -44,7 +48,8 @@ void TouristTabWidget::on_editEntryButton_clicked() {
     NewTouristEntryDialog dialog(
         &m_dataStorage->m_touristEntries[real_idx], this);
 
-    if (dialog.exec()) {
+    if (dialog.exec())
+    {
         m_dataStorage->m_touristEntries[real_idx] = dialog.getTouristEntry();
         reloadTable();
         ui->editEntryButton->setDisabled(true);
@@ -54,14 +59,16 @@ void TouristTabWidget::on_editEntryButton_clicked() {
     resizeTable();
 }
 
-void TouristTabWidget::on_deleteEntryButton_clicked() {
+void TouristTabWidget::on_deleteEntryButton_clicked()
+{
     QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
 
     QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
 
     if (QMessageBox::question(this, "Подтверждение удаления",
                               QString("Вы действительно хотите удалить запись?"))
-        != QMessageBox::Yes) {
+        != QMessageBox::Yes)
+    {
         return;
     }
 
@@ -72,5 +79,29 @@ void TouristTabWidget::on_deleteEntryButton_clicked() {
     resizeTable();
 }
 
-void TouristTabWidget::on_createReportButton_clicked() {
+void TouristTabWidget::on_createReportButton_clicked()
+{
+    QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
+
+    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
+
+    if (!index.isValid()) return;
+
+    TouristEntry entry = m_dataStorage->m_touristEntries[index.row()];
+
+
+    QString result = QString("Данные о туристе(ID %1):\n"
+            "-Имя: %2\n"
+            "-Фамилия: %3\n").arg(entry.m_id.value()).
+                              arg(entry.m_firstName, entry.m_lastName);
+
+    if (!entry.m_surname.isEmpty())
+    {
+        result += QString("-Отчество: %1\n").arg(entry.m_surname);
+    }
+    result += QString("-Пол: %5\n"
+        "-Дата рождения: %6\n").arg(kGenders[static_cast<size_t>(entry.m_gender)],
+                                    entry.m_birthDate.toString("dd.MM.yyyy"));
+
+    QMessageBox::information(this, "Отчет", result);
 }

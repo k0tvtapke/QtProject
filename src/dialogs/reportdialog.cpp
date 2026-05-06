@@ -33,7 +33,9 @@ void ReportDialog::on_saveButton_clicked()
 {
     QString filePath = QFileDialog::getSaveFileName(this, "Выберите, куда сохранить отчет",
                                                     QDir::homePath(),
-                                                    "*.txt;;*");
+                                                    "*.txt;;*",
+                                                    nullptr,
+                                                    QFileDialog::DontUseNativeDialog);
 
     if (!filePath.isEmpty())
     {

@@ -7,12 +7,11 @@
 #include "dialogs/newtouristpackageentrydialog.h"
 #include "dialogs/reportdialog.h"
 #include "dialogs/touristpackagechartdialog.h"
+#include "util/reportformatters.h"
 
-#include <QMessageBox>
-
-TouristPackageTabWidget::TouristPackageTabWidget(DataStorage* storage, QWidget* parent) : m_dataStorage(storage),
-    BaseTabWidget(new TouristPackageTableModel(storage, parent), parent)
-{
+TouristPackageTabWidget::TouristPackageTabWidget(DataStorage *storage, QWidget *parent)
+    : BaseTabWidget(new TouristPackageTableModel(storage, parent), parent)
+      , m_dataStorage(storage) {
     ui->databaseTable->setSortingEnabled(true);
     ui->databaseTable->resizeColumnsToContents();
     ui->databaseTable->setWordWrap(true);
@@ -30,12 +29,10 @@ TouristPackageTabWidget::TouristPackageTabWidget(DataStorage* storage, QWidget* 
     connect(ui->showChartButton, &QPushButton::pressed, this, &TouristPackageTabWidget::onShowChartButtonClicked);
 }
 
-void TouristPackageTabWidget::on_addEntryButton_clicked()
-{
+void TouristPackageTabWidget::on_addEntryButton_clicked() {
     NewTouristPackageEntryDialog dialog(m_dataStorage->m_touristPackageEntries.size(), m_dataStorage, this);
 
-    if (dialog.exec())
-    {
+    if (dialog.exec()) {
         m_dataStorage->addTouristPackageEntry(dialog.getTouristPackageEntry());
         reloadTable();
     }
@@ -43,18 +40,14 @@ void TouristPackageTabWidget::on_addEntryButton_clicked()
     resizeTable();
 }
 
-void TouristPackageTabWidget::on_editEntryButton_clicked()
-{
-    QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
+void TouristPackageTabWidget::on_editEntryButton_clicked() {
+    auto realIdx = currentSelectedRealIndex();
+    if (!realIdx) return;
 
-    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
-    size_t real_idx = m_dataStorage->touristPackageEntryViewIndexToRealIndex(index.row());
+    NewTouristPackageEntryDialog dialog(&m_dataStorage->m_touristPackageEntries[*realIdx], m_dataStorage, this);
 
-    NewTouristPackageEntryDialog dialog(&m_dataStorage->m_touristPackageEntries[real_idx], m_dataStorage, this);
-
-    if (dialog.exec())
-    {
-        m_dataStorage->m_touristPackageEntries[real_idx] = dialog.getTouristPackageEntry();
+    if (dialog.exec()) {
+        m_dataStorage->m_touristPackageEntries[*realIdx] = dialog.getTouristPackageEntry();
         reloadTable();
 
         ui->editEntryButton->setDisabled(true);
@@ -64,84 +57,43 @@ void TouristPackageTabWidget::on_editEntryButton_clicked()
     resizeTable();
 }
 
-void TouristPackageTabWidget::on_deleteEntryButton_clicked()
-{
-    QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
+void TouristPackageTabWidget::on_deleteEntryButton_clicked() {
+    auto realIdx = currentSelectedRealIndex();
+    if (!realIdx) return;
 
-    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
-
-    if (QMessageBox::question(this, "Подтверждение удаления",
-                              QString("Вы действительно хотите удалить запись?"))
-        != QMessageBox::Yes)
-    {
+    if (!confirmDelete()) {
         return;
     }
 
-    if (!index.isValid()) return;
-
-    m_tableModel->removeEntry(index.row(), QModelIndex());
-
-    resizeTable();
+    m_dataStorage->deleteTouristPackageEntry(*realIdx);
+    afterMutation();
 }
 
-void TouristPackageTabWidget::on_createReportButton_clicked()
-{
-    QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
+void TouristPackageTabWidget::on_createReportButton_clicked() {
+    auto realIdx = currentSelectedRealIndex();
+    if (!realIdx) return;
 
-    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
-
-    if (!index.isValid()) return;
-
-    const size_t real_idx = m_dataStorage->touristPackageEntryViewIndexToRealIndex(static_cast<size_t>(index.row()));
-    if (real_idx >= static_cast<size_t>(m_dataStorage->m_touristPackageEntries.size())) return;
-
-    TouristPackageEntry touristPackageEntry = m_dataStorage->m_touristPackageEntries[real_idx];
+    const TouristPackageEntry &touristPackageEntry = m_dataStorage->m_touristPackageEntries[*realIdx];
 
     QString reportText = QString("Данные о путевке (ID %1):\n"
         "Список туристов:\n").arg(touristPackageEntry.m_id.value());
 
-    for (quint32 i = 0; i < touristPackageEntry.m_touristsIds.length(); i++)
-    {
+    for (quint32 i = 0; i < static_cast<quint32>(touristPackageEntry.m_touristsIds.length()); i++) {
         const quint32 touristIdx = touristPackageEntry.m_touristsIds[i];
-        if (touristIdx >= static_cast<quint32>(m_dataStorage->m_touristEntries.size()))
-        {
+        if (touristIdx >= static_cast<quint32>(m_dataStorage->m_touristEntries.size())) {
             continue;
         }
 
-        TouristEntry touristEntry = m_dataStorage->m_touristEntries[touristIdx];
+        const TouristEntry &touristEntry = m_dataStorage->m_touristEntries[touristIdx];
 
         reportText += QString("    Турист %1 (ID %2):\n").arg(i + 1).arg(touristIdx);
-
-        reportText += QString("        -Имя: %1\n"
-            "        -Фамилия: %2\n").arg(touristEntry.m_firstName, touristEntry.m_lastName);
-
-        if (!touristEntry.m_surname.isEmpty())
-        {
-            reportText += QString("        -Отчество: %1\n").arg(touristEntry.m_surname);
-        }
-        reportText += QString("        -Пол: %5\n"
-            "        -Дата рождения: %6\n").arg(kGenders[static_cast<size_t>(touristEntry.m_gender)],
-                                            touristEntry.m_birthDate.toString("dd.MM.yyyy"));
+        reportText += ReportFormatters::formatTouristBlock(touristEntry, 8);
     }
 
     const quint32 destinationIdx = touristPackageEntry.m_destinationId;
-    if (destinationIdx >= static_cast<quint32>(m_dataStorage->m_destinationEntries.size()))
-    {
-    }
-    else
-    {
-        DestinationEntry destinationEntry = m_dataStorage->m_destinationEntries[destinationIdx];
-
-        reportText += QString("Данные о направлении (ID %1):\n"
-                "    -Страна: %2\n"
-                "    -Город: %3\n"
-                "    -Базовая цена: %4\n"
-                "    -Тип питания: %5\n"
-                "    -Кол-во звезд отеля: %6\n").arg(destinationEntry.m_id.value()).
-                                               arg(destinationEntry.m_country, destinationEntry.m_city).
-                                               arg(destinationEntry.m_basePrice).
-                                               arg(kFoodTypes[static_cast<size_t>(destinationEntry.m_foodType)]).
-                                               arg(destinationEntry.m_hotelStars);
+    if (destinationIdx < static_cast<quint32>(m_dataStorage->m_destinationEntries.size())) {
+        const DestinationEntry &destinationEntry = m_dataStorage->m_destinationEntries[destinationIdx];
+        reportText += ReportFormatters::formatDestinationBlock(destinationEntry);
     }
 
     reportText += QString("-Дата отправки: %1\n"
@@ -154,8 +106,7 @@ void TouristPackageTabWidget::on_createReportButton_clicked()
     dialog.exec();
 }
 
-void TouristPackageTabWidget::onShowChartButtonClicked()
-{
+void TouristPackageTabWidget::onShowChartButtonClicked() {
     TouristPackageChartDialog dialog(m_dataStorage, this);
 
     dialog.exec();

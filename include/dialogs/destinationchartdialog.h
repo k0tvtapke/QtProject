@@ -1,21 +1,33 @@
 #ifndef DESTINATIONCHARTDIALOG_H
 #define DESTINATIONCHARTDIALOG_H
 
-#include <QDialog>
-#include <QtCharts>
 #include "datastorage.h"
+#include "dialogs/basechartdialog.h"
 
-class DestinationChartDialog : public QDialog
-{
+/**
+ * @class DestinationChartDialog
+ * @brief Круговая диаграмма распределения отелей по количеству звёзд.
+ * @extends BaseChartDialog
+ */
+class DestinationChartDialog : public BaseChartDialog {
     Q_OBJECT
 
 public:
-    explicit DestinationChartDialog(DataStorage* storage, QWidget* parent = nullptr);
+    /**
+     * @brief Конструктор. Сразу строит диаграмму на основе хранилища.
+     */
+    explicit DestinationChartDialog(DataStorage *storage, QWidget *parent = nullptr);
 
-    ~DestinationChartDialog();
+    /**
+     * @override BaseChartDialog::~BaseChartDialog
+     */
+    ~DestinationChartDialog() override = default;
 
 private:
-    void setupChart(DataStorage* storage);
+    /**
+     * @brief Подсчитывает статистику и строит QPieSeries.
+     */
+    void setupChart(DataStorage *storage);
 };
 
 #endif // DESTINATIONCHARTDIALOG_H

@@ -1,21 +1,33 @@
 #ifndef TOURISTCHARTDIALOG_H
 #define TOURISTCHARTDIALOG_H
 
-#include <QDialog>
-#include <QtCharts>
 #include "datastorage.h"
+#include "dialogs/basechartdialog.h"
 
-class TouristChartDialog : public QDialog
-{
+/**
+ * @class TouristChartDialog
+ * @brief Круговая диаграмма распределения туристов по полу.
+ * @extends BaseChartDialog
+ */
+class TouristChartDialog : public BaseChartDialog {
     Q_OBJECT
 
 public:
-    explicit TouristChartDialog(DataStorage* storage, QWidget* parent = nullptr);
+    /**
+     * @brief Конструктор. Сразу строит диаграмму.
+     */
+    explicit TouristChartDialog(DataStorage *storage, QWidget *parent = nullptr);
 
-    ~TouristChartDialog();
+    /**
+     * @override BaseChartDialog::~BaseChartDialog
+     */
+    ~TouristChartDialog() override = default;
 
 private:
-    void setupChart(DataStorage* storage);
+    /**
+     * @brief Подсчитывает кол-во по полу и строит QPieSeries.
+     */
+    void setupChart(DataStorage *storage);
 };
 
 #endif // TOURISTCHARTDIALOG_H

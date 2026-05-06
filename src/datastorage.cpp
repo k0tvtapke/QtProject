@@ -1,8 +1,8 @@
 #include "datastorage.h"
 #include <QDataStream>
 #include <cassert>
+#include <stdexcept>
 
-// Конструкторы
 DestinationEntry::DestinationEntry(QString country,
                                    QString city,
                                    double basePrice,
@@ -45,7 +45,6 @@ TouristPackageEntry::TouristPackageEntry(QList<quint32> touristsIds,
     m_finalPrice(finalPrice) {
 }
 
-// Операторы для enum
 QDataStream &operator<<(QDataStream &out, const Gender &g) {
     return out << static_cast<int>(g);
 }
@@ -68,7 +67,6 @@ QDataStream &operator>>(QDataStream &in, FoodType &f) {
     return in;
 }
 
-// Операторы для std::optional (если нужен)
 QDataStream &operator<<(QDataStream &out, const std::optional<quint32> &opt) {
     if (opt.has_value()) {
         out << true << *opt;
@@ -91,7 +89,6 @@ QDataStream &operator>>(QDataStream &in, std::optional<quint32> &opt) {
     return in;
 }
 
-// Операторы для DestinationEntry
 QDataStream &operator<<(QDataStream &out, const DestinationEntry &d) {
     out << d.m_id
         << d.m_country
@@ -114,7 +111,6 @@ QDataStream &operator>>(QDataStream &in, DestinationEntry &d) {
     return in;
 }
 
-// Операторы для TouristEntry
 QDataStream &operator<<(QDataStream &out, const TouristEntry &t) {
     out << t.m_id
         << t.m_firstName
@@ -137,7 +133,6 @@ QDataStream &operator>>(QDataStream &in, TouristEntry &t) {
     return in;
 }
 
-// Операторы для TouristPackageEntry
 QDataStream &operator<<(QDataStream &out, const TouristPackageEntry &p) {
     out << p.m_id
         << p.m_touristsIds
@@ -160,110 +155,92 @@ QDataStream &operator>>(QDataStream &in, TouristPackageEntry &p) {
     return in;
 }
 
-// Методы DataStorage
+namespace {
+    template<typename T>
+    size_t viewCountOf(const QList<T> &list) {
+        size_t count = 0;
+        for (const auto &entry : list) {
+            if (!entry.m_isRemoved) {
+                ++count;
+            }
+        }
+        return count;
+    }
+
+    template<typename T>
+    size_t viewIndexToRealIndexOf(const QList<T> &list, size_t view_idx) {
+        size_t visibleCount = 0;
+        for (int i = 0; i < list.size(); ++i) {
+            if (!list[i].m_isRemoved) {
+                if (visibleCount == view_idx) {
+                    return static_cast<size_t>(i);
+                }
+                ++visibleCount;
+            }
+        }
+        throw std::out_of_range("Variable view_idx out of range");
+    }
+
+    template<typename T>
+    void addEntryTo(QList<T> &list, T new_entry) {
+        new_entry.m_id = static_cast<quint32>(list.size());
+        list.append(new_entry);
+    }
+
+    template<typename T>
+    void deleteEntryFrom(QList<T> &list, size_t idx) {
+        assert(static_cast<size_t>(list.size()) > idx);
+        assert(!list[idx].m_isRemoved);
+        list[idx].m_isRemoved = true;
+    }
+}
+
 void DataStorage::addDestinationEntry(DestinationEntry new_entry) {
-    new_entry.m_id = static_cast<quint32>(m_destinationEntries.size());
-    m_destinationEntries.append(new_entry);
+    addEntryTo(m_destinationEntries, new_entry);
 }
 
 void DataStorage::addTouristEntry(TouristEntry new_entry) {
-    new_entry.m_id = static_cast<quint32>(m_touristEntries.size());
-    m_touristEntries.append(new_entry);
+    addEntryTo(m_touristEntries, new_entry);
 }
 
 void DataStorage::addTouristPackageEntry(TouristPackageEntry new_entry) {
-    new_entry.m_id = static_cast<quint32>(m_touristPackageEntries.size());
-    m_touristPackageEntries.append(new_entry);
+    addEntryTo(m_touristPackageEntries, new_entry);
 }
 
 void DataStorage::deleteDestinationEntry(const size_t idx) {
-    assert(m_destinationEntries.size() > idx);
-    assert(!m_destinationEntries[idx].m_isRemoved);
-    m_destinationEntries[idx].m_isRemoved = true;
+    deleteEntryFrom(m_destinationEntries, idx);
 }
 
 void DataStorage::deleteTouristEntry(const size_t idx) {
-    assert(m_touristEntries.size() > idx);
-    assert(!m_touristEntries[idx].m_isRemoved);
-    m_touristEntries[idx].m_isRemoved = true;
+    deleteEntryFrom(m_touristEntries, idx);
 }
 
 void DataStorage::deleteTouristPackageEntry(const size_t idx) {
-    assert(m_touristPackageEntries.size() > idx);
-    assert(!m_touristPackageEntries[idx].m_isRemoved);
-    m_touristPackageEntries[idx].m_isRemoved = true;
+    deleteEntryFrom(m_touristPackageEntries, idx);
 }
 
 size_t DataStorage::destinationEntryViewIndexToRealIndex(const size_t view_idx) {
-    assert(m_destinationEntries.size() > view_idx);
-    size_t visibleCount = 0;
-    for (int i = 0; i < m_destinationEntries.size(); ++i) {
-        if (!m_destinationEntries[i].m_isRemoved) {
-            if (visibleCount == view_idx) {
-                return static_cast<size_t>(i);
-            }
-            ++visibleCount;
-        }
-    }
-    throw std::out_of_range("Variable view_idx out of range");
+    return viewIndexToRealIndexOf(m_destinationEntries, view_idx);
 }
 
 size_t DataStorage::touristEntryViewIndexToRealIndex(const size_t view_idx) {
-    assert(m_touristEntries.size() > view_idx);
-    size_t visibleCount = 0;
-    for (int i = 0; i < m_touristEntries.size(); ++i) {
-        if (!m_touristEntries[i].m_isRemoved) {
-            if (visibleCount == view_idx) {
-                return static_cast<size_t>(i);
-            }
-            ++visibleCount;
-        }
-    }
-    throw std::out_of_range("Variable view_idx out of range");
+    return viewIndexToRealIndexOf(m_touristEntries, view_idx);
 }
 
 size_t DataStorage::touristPackageEntryViewIndexToRealIndex(const size_t view_idx) {
-    assert(m_touristPackageEntries.size() > view_idx);
-    size_t visibleCount = 0;
-    for (int i = 0; i < m_touristPackageEntries.size(); ++i) {
-        if (!m_touristPackageEntries[i].m_isRemoved) {
-            if (visibleCount == view_idx) {
-                return static_cast<size_t>(i);
-            }
-            ++visibleCount;
-        }
-    }
-    throw std::out_of_range("Variable view_idx out of range");
+    return viewIndexToRealIndexOf(m_touristPackageEntries, view_idx);
 }
 
 size_t DataStorage::getDestinationEntriesViewCount() {
-    size_t count = 0;
-    for (auto const &entry : m_destinationEntries) {
-        if (!entry.m_isRemoved) {
-            ++count;
-        }
-    }
-    return count;
+    return viewCountOf(m_destinationEntries);
 }
 
 size_t DataStorage::getTouristEntriesViewCount() {
-    size_t count = 0;
-    for (auto const &entry : m_touristEntries) {
-        if (!entry.m_isRemoved) {
-            ++count;
-        }
-    }
-    return count;
+    return viewCountOf(m_touristEntries);
 }
 
 size_t DataStorage::getTouristPackageEntriesViewCount() {
-    size_t count = 0;
-    for (auto const &entry : m_touristPackageEntries) {
-        if (!entry.m_isRemoved) {
-            ++count;
-        }
-    }
-    return count;
+    return viewCountOf(m_touristPackageEntries);
 }
 
 bool DataStorage::saveToFile(const QString &filename) const {
@@ -273,7 +250,7 @@ bool DataStorage::saveToFile(const QString &filename) const {
     }
 
     QDataStream out(&file);
-    out.setVersion(QDataStream::Qt_5_0); // Qt 5 версия
+    out.setVersion(QDataStream::Qt_5_0);
 
     out << m_destinationEntries;
     out << m_touristEntries;

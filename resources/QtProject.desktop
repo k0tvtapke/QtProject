@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=АРМ сотрудника тур. агентства
+Name[ru]=АРМ сотрудника тур. агентства
+GenericName=Travel Agent Workstation
+Comment=Учет туристов, направлений и путёвок
+Comment[ru]=Учет туристов, направлений и путёвок
+Exec=QtProject
+Icon=QtProject
+Terminal=false
+Categories=Office;Database;
+StartupNotify=true

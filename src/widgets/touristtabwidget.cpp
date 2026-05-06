@@ -5,14 +5,11 @@
 #include "dialogs/newtouristentrydialog.h"
 #include "dialogs/reportdialog.h"
 #include "dialogs/touristchartdialog.h"
+#include "util/reportformatters.h"
 
-#include <QMessageBox>
-
-TouristTabWidget::TouristTabWidget(DataStorage* storage, QWidget* parent) : m_dataStorage(storage),
-                                                                            BaseTabWidget(
-                                                                                new TouristTableModel(storage, parent),
-                                                                                parent)
-{
+TouristTabWidget::TouristTabWidget(DataStorage *storage, QWidget *parent)
+    : BaseTabWidget(new TouristTableModel(storage, parent), parent)
+      , m_dataStorage(storage) {
     ui->databaseTable->setSortingEnabled(true);
     ui->databaseTable->resizeColumnsToContents();
     ui->databaseTable->setWordWrap(true);
@@ -30,12 +27,10 @@ TouristTabWidget::TouristTabWidget(DataStorage* storage, QWidget* parent) : m_da
     connect(ui->showChartButton, &QPushButton::pressed, this, &TouristTabWidget::onShowChartButtonClicked);
 }
 
-void TouristTabWidget::on_addEntryButton_clicked()
-{
+void TouristTabWidget::on_addEntryButton_clicked() {
     NewTouristEntryDialog dialog(m_dataStorage->m_touristEntries.size(), this);
 
-    if (dialog.exec())
-    {
+    if (dialog.exec()) {
         m_dataStorage->addTouristEntry(dialog.getTouristEntry());
         reloadTable();
     }
@@ -43,19 +38,14 @@ void TouristTabWidget::on_addEntryButton_clicked()
     resizeTable();
 }
 
-void TouristTabWidget::on_editEntryButton_clicked()
-{
-    QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
+void TouristTabWidget::on_editEntryButton_clicked() {
+    auto realIdx = currentSelectedRealIndex();
+    if (!realIdx) return;
 
-    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
-    size_t real_idx = m_dataStorage->touristEntryViewIndexToRealIndex(index.row());
+    NewTouristEntryDialog dialog(&m_dataStorage->m_touristEntries[*realIdx], this);
 
-    NewTouristEntryDialog dialog(
-        &m_dataStorage->m_touristEntries[real_idx], this);
-
-    if (dialog.exec())
-    {
-        m_dataStorage->m_touristEntries[real_idx] = dialog.getTouristEntry();
+    if (dialog.exec()) {
+        m_dataStorage->m_touristEntries[*realIdx] = dialog.getTouristEntry();
         reloadTable();
         ui->editEntryButton->setDisabled(true);
         ui->deleteEntryButton->setDisabled(true);
@@ -64,56 +54,32 @@ void TouristTabWidget::on_editEntryButton_clicked()
     resizeTable();
 }
 
-void TouristTabWidget::on_deleteEntryButton_clicked()
-{
-    QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
+void TouristTabWidget::on_deleteEntryButton_clicked() {
+    auto realIdx = currentSelectedRealIndex();
+    if (!realIdx) return;
 
-    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
-
-    if (QMessageBox::question(this, "Подтверждение удаления",
-                              QString("Вы действительно хотите удалить запись?"))
-        != QMessageBox::Yes)
-    {
+    if (!confirmDelete()) {
         return;
     }
 
-    if (!index.isValid()) return;
-
-    m_tableModel->removeEntry(index.row(), QModelIndex());
-
-    resizeTable();
+    m_dataStorage->deleteTouristEntry(*realIdx);
+    afterMutation();
 }
 
-void TouristTabWidget::on_createReportButton_clicked()
-{
-    QModelIndexList selectedIndexes = ui->databaseTable->selectionModel()->selectedRows();
+void TouristTabWidget::on_createReportButton_clicked() {
+    auto realIdx = currentSelectedRealIndex();
+    if (!realIdx) return;
 
-    QModelIndex index = m_sortFilterModel->mapToSource(selectedIndexes.first());
+    const TouristEntry &entry = m_dataStorage->m_touristEntries[*realIdx];
 
-    if (!index.isValid()) return;
-
-    TouristEntry entry = m_dataStorage->m_touristEntries[index.row()];
-
-
-    QString reportText = QString("Данные о туристе (ID %1):\n"
-            "-Имя: %2\n"
-            "-Фамилия: %3\n").arg(entry.m_id.value()).
-                              arg(entry.m_firstName, entry.m_lastName);
-
-    if (!entry.m_surname.isEmpty())
-    {
-        reportText += QString("-Отчество: %1\n").arg(entry.m_surname);
-    }
-    reportText += QString("-Пол: %5\n"
-        "-Дата рождения: %6\n").arg(kGenders[static_cast<size_t>(entry.m_gender)],
-                                    entry.m_birthDate.toString("dd.MM.yyyy"));
+    QString reportText = QString("Данные о туристе (ID %1):\n").arg(entry.m_id.value());
+    reportText += ReportFormatters::formatTouristBlock(entry);
 
     ReportDialog dialog(this, reportText);
     dialog.exec();
 }
 
-void TouristTabWidget::onShowChartButtonClicked()
-{
+void TouristTabWidget::onShowChartButtonClicked() {
     TouristChartDialog dialog(m_dataStorage, this);
 
     dialog.exec();

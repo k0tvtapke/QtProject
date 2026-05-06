@@ -1,23 +1,33 @@
 #ifndef TOURISTPACKAGECHARTDIALOG_H
 #define TOURISTPACKAGECHARTDIALOG_H
 
-#include <QDialog>
-#include <QtCharts>
 #include "datastorage.h"
+#include "dialogs/basechartdialog.h"
 
-QT_CHARTS_USE_NAMESPACE
-
-class TouristPackageChartDialog : public QDialog
-{
+/**
+ * @class TouristPackageChartDialog
+ * @brief Столбчатая диаграмма ТОП-10 самых популярных направлений.
+ * @extends BaseChartDialog
+ */
+class TouristPackageChartDialog : public BaseChartDialog {
     Q_OBJECT
 
 public:
-    explicit TouristPackageChartDialog(DataStorage* storage, QWidget* parent = nullptr);
+    /**
+     * @brief Конструктор. Сразу строит диаграмму.
+     */
+    explicit TouristPackageChartDialog(DataStorage *storage, QWidget *parent = nullptr);
 
-    ~TouristPackageChartDialog();
+    /**
+     * @override BaseChartDialog::~BaseChartDialog
+     */
+    ~TouristPackageChartDialog() override = default;
 
 private:
-    void setupChart(DataStorage* storage);
+    /**
+     * @brief Агрегирует продажи по направлениям и строит горизонтальные бары.
+     */
+    void setupChart(DataStorage *storage);
 };
 
 #endif // TOURISTPACKAGECHARTDIALOG_H

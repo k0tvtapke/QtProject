@@ -227,6 +227,9 @@
          <height>0</height>
         </size>
        </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
     </layout>

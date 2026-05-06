@@ -42,11 +42,13 @@ void MainWindow::PrepareTouristPackageTab() {
 }
 
 void MainWindow::on_loadDatabaseButton_clicked() {
-    const QString filePath = QFileDialog::getOpenFileName(this, "Выберите, куда сохранить базу данных",
+    const QString filePath = QFileDialog::getOpenFileName(this, "Выберите, какую базу данных загрузить",
                                                           m_chosenFilePath.isEmpty()
                                                               ? QDir::homePath()
                                                               : m_chosenFilePath,
-                                                          "*.bin");
+                                                          "*.bin",
+                                                          nullptr,
+                                                          QFileDialog::DontUseNativeDialog);
 
     if (!filePath.isEmpty()) {
         m_chosenFilePath = filePath;
@@ -73,7 +75,9 @@ void MainWindow::on_saveDatabaseButton_clicked() {
                                                           m_chosenFilePath.isEmpty()
                                                               ? QDir::homePath()
                                                               : m_chosenFilePath,
-                                                          "*.bin");
+                                                          "*.bin",
+                                                          nullptr,
+                                                          QFileDialog::DontUseNativeDialog);
 
     if (!filePath.isEmpty()) {
         m_chosenFilePath = filePath;

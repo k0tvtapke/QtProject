@@ -1,10 +1,18 @@
 #include "dialogs/newtouristentrydialog.h"
 #include "ui_newtouristentrydialog.h"
 
+namespace {
+    const QString kNameTooltip =
+        "Только кириллица, начинается с заглавной буквы, далее — строчные. Пример: «Иван».";
+    const QString kSurnameTooltip =
+        "Необязательное поле. Если заполнено — только кириллица, начинается с заглавной буквы. "
+        "Пример: «Иванович».";
+}
+
 NewTouristEntryDialog::NewTouristEntryDialog(size_t id, QWidget *parent)
-    : QDialog(parent)
-      , ui(new Ui::NewTouristEntryDialog)
-      , m_touristEntry(new TouristEntry) {
+    : BaseEntryDialog(parent)
+      , m_touristEntry(new TouristEntry)
+      , ui(new Ui::NewTouristEntryDialog) {
     ui->setupUi(this);
 
     isNew = true;
@@ -12,30 +20,26 @@ NewTouristEntryDialog::NewTouristEntryDialog(size_t id, QWidget *parent)
     this->setWindowTitle("Добавить нового туриста");
     ui->idLineEdit->setText(QString::number(id));
 
-    QRegularExpression nameRe("^[А-ЯЁ][а-яё]*$");
-    ui->firstNameLineEdit->setValidator(new QRegularExpressionValidator(nameRe, this));
-    ui->lastNameLineEdit->setValidator(new QRegularExpressionValidator(nameRe, this));
+    ui->birthDateDateEdit->setCalendarPopup(true);
 
-    QRegularExpression surnameRe("^([А-ЯЁ][а-яё]*)?$");
-    ui->surnameLineEdit->setValidator(new QRegularExpressionValidator(surnameRe, this));
+    setupValidators();
 
     ui->addEntryButton->setDisabled(true);
-
-    connect(ui->firstNameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
-    connect(ui->lastNameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
-    connect(ui->surnameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
+    ui->addEntryButton->setToolTip("Заполните корректно все поля");
 }
 
 NewTouristEntryDialog::NewTouristEntryDialog(TouristEntry *touristEntry, QWidget *parent)
-    : QDialog(parent)
-      , ui(new Ui::NewTouristEntryDialog)
-      , m_touristEntry(touristEntry) {
+    : BaseEntryDialog(parent)
+      , m_touristEntry(touristEntry)
+      , ui(new Ui::NewTouristEntryDialog) {
     ui->setupUi(this);
 
     isNew = false;
 
     this->setWindowTitle("Изменить туриста");
     ui->idLineEdit->setText(QString::number(m_touristEntry->m_id.value()));
+
+    ui->birthDateDateEdit->setCalendarPopup(true);
 
     ui->firstNameLineEdit->setText(m_touristEntry->m_firstName);
     ui->lastNameLineEdit->setText(m_touristEntry->m_lastName);
@@ -44,18 +48,9 @@ NewTouristEntryDialog::NewTouristEntryDialog(TouristEntry *touristEntry, QWidget
     ui->birthDateDateEdit->setDate(m_touristEntry->m_birthDate);
 
     ui->addEntryButton->setText("Изменить запись");
-    ui->addEntryButton->setEnabled(true);
 
-    QRegularExpression nameRe("^[А-ЯЁ][а-яё]*$");
-    ui->firstNameLineEdit->setValidator(new QRegularExpressionValidator(nameRe, this));
-    ui->lastNameLineEdit->setValidator(new QRegularExpressionValidator(nameRe, this));
-
-    QRegularExpression surnameRe("^([А-ЯЁ][а-яё]*)?$");
-    ui->surnameLineEdit->setValidator(new QRegularExpressionValidator(surnameRe, this));
-
-    connect(ui->firstNameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
-    connect(ui->lastNameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
-    connect(ui->surnameLineEdit, &QLineEdit::textEdited, this, &NewTouristEntryDialog::onLineEditChanged);
+    setupValidators();
+    revalidate();
 }
 
 NewTouristEntryDialog::~NewTouristEntryDialog() {
@@ -65,49 +60,19 @@ NewTouristEntryDialog::~NewTouristEntryDialog() {
     }
 }
 
-TouristEntry NewTouristEntryDialog::getTouristEntry() const {
-    return *m_touristEntry;
+void NewTouristEntryDialog::setupValidators() {
+    QRegularExpression nameRe("^[А-ЯЁ][а-яё]*$");
+    registerValidatedField(ui->firstNameLineEdit, nameRe, "Имя", kNameTooltip);
+    registerValidatedField(ui->lastNameLineEdit, nameRe, "Фамилия", kNameTooltip);
+
+    QRegularExpression surnameRe("^([А-ЯЁ][а-яё]*)?$");
+    registerValidatedField(ui->surnameLineEdit, surnameRe, "Отчество", kSurnameTooltip);
+
+    setSubmitButton(ui->addEntryButton);
 }
 
-void NewTouristEntryDialog::onLineEditChanged()
-{
-    int flagsSum = 0;
-    if (ui->firstNameLineEdit->hasAcceptableInput())
-    {
-        ui->firstNameLineEdit->setStyleSheet("");
-        flagsSum++;
-    }
-    else
-    {
-        ui->firstNameLineEdit->setStyleSheet("border: 1px solid red;");
-    }
-    if (ui->lastNameLineEdit->hasAcceptableInput())
-    {
-        ui->lastNameLineEdit->setStyleSheet("");
-        flagsSum++;
-    }
-    else
-    {
-        ui->lastNameLineEdit->setStyleSheet("border: 1px solid red;");
-    }
-    if (ui->surnameLineEdit->hasAcceptableInput())
-    {
-        ui->surnameLineEdit->setStyleSheet("");
-        flagsSum++;
-    }
-    else
-    {
-        ui->surnameLineEdit->setStyleSheet("border: 1px solid red;");
-    }
-
-    if (flagsSum == 3)
-    {
-        ui->addEntryButton->setEnabled(true);
-    }
-    else
-    {
-        ui->addEntryButton->setDisabled(true);
-    }
+TouristEntry NewTouristEntryDialog::getTouristEntry() const {
+    return *m_touristEntry;
 }
 
 void NewTouristEntryDialog::on_addEntryButton_clicked() {
@@ -119,7 +84,6 @@ void NewTouristEntryDialog::on_addEntryButton_clicked() {
 
     accept();
 }
-
 
 void NewTouristEntryDialog::on_cancelButton_clicked() {
     reject();
